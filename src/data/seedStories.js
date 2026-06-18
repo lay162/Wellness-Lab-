@@ -1,0 +1,86 @@
+// Seed success stories — used when Supabase has no entries yet.
+// Public versions are sanitized (no product/drug names, no specific weight claims).
+
+export const SEED_SUCCESS_STORIES = [
+  {
+    id: 'seed-chantelle',
+    title: 'Finding confidence again',
+    author_name: 'Chantelle A.',
+    excerpt: 'I finally feel happy in my own skin again — with more energy and the confidence to be in photos with my children.',
+    content: `<p>I finally feel happy in my own skin again. I have so much more energy than I've had in years, and for the first time in a long time I'm confident being in photos and videos with my children — not hiding behind the camera.</p><p>The support I received made all the difference. I can't thank the team enough for helping change my life for the better.</p>`,
+    content_private: `<p>I wasn't sure about starting until I saw someone I trusted doing it. I've lost 6 stone and had to buy a whole new wardrobe because nothing fit anymore!</p><p>I have so much more energy than I've had in years. I'm happy within my body again and confident enough to be in photos and videos with my children — not always hiding behind the camera.</p><p>I can't recommend the team enough. They have helped change my life for the absolute better. Thank you so much ❤️</p>`,
+    before_image: '/content/success-stories/chantelle-anita-rowland-before.jpg',
+    after_image: '/content/success-stories/chantelle-anita-rowland-after.jpg',
+    image_url: '/content/success-stories/chantelle-anita-rowland-after.jpg',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+  {
+    id: 'seed-steph',
+    title: 'A life-changing wellness journey',
+    author_name: 'Steph W.',
+    excerpt: 'After years of yo-yo dieting, I\'ve transformed my physical and mental wellbeing — now running 3 times a week and feeling better than ever.',
+    content: `<p>For years it was the same cycle — dieting, losing weight, putting it all back on and more. In January I decided enough was enough and it was time to change for good.</p><p>I've transformed my physical and mental wellbeing. I've started at the gym, I'm running regularly, and I've honestly never felt better. For once I know the progress is going to stay.</p>`,
+    content_private: `<p>Looking back at my Facebook memories it's the same old story — on a diet, losing weight, putting it all back on and more! In January I decided enough was enough.</p><p>I found Chantelle and Jourdy and started my journey. It's honestly changed my life! I've lost just over 3 stone, started at the gym, and finally been able to start running without it affecting my fibromyalgia. I'm now running 3 5ks a week!</p><p>People say it's cheating — I say I've changed my life for the better. Few more stone left to lose and for once I know it's going to come off and stay off!</p>`,
+    before_image: '/content/success-stories/steph-wilcock-before.jpg',
+    after_image: '/content/success-stories/steph-wilcock-after.jpg',
+    image_url: '/content/success-stories/steph-wilcock-after.jpg',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+]
+
+export const SEED_REVIEWS = [
+  {
+    id: 'seed-jennifer',
+    author_name: 'Jennifer K.',
+    rating: 5,
+    content: 'I wouldn\'t have been brave enough to share this before, but I\'m so proud of how far I\'ve come. After struggling with my mental health and confidence, I finally found a path that worked for me. I\'m no longer ashamed to be in photos with my children.',
+    content_private: 'After my son was born my mental health plummeted — depression, anxiety and PTSD. Medication and depression led to weight gain which made me more depressed. I tried so many diets without success until I found the right support. I\'m no longer ashamed to be in photos with my children and I\'m so proud of how far I\'ve come.',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+  {
+    id: 'seed-chantelle-review',
+    author_name: 'Chantelle A.',
+    rating: 5,
+    content: 'The support I received has genuinely changed my life. I have my energy back, my confidence back, and I\'m finally present in moments with my family.',
+    content_private: 'I\'ve lost 6 stone and feel like a completely new person. The team guided me every step of the way. I can\'t recommend them enough — they changed my life for the absolute better.',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+  {
+    id: 'seed-steph-review',
+    author_name: 'Steph W.',
+    rating: 5,
+    content: 'After years of yo-yo dieting I finally found something that works long-term. I\'m running, going to the gym, and feel better physically and mentally than I ever have.',
+    content_private: 'Lost over 3 stone, running 3 5ks a week despite fibromyalgia, and finally feel like this is sustainable. Changed my life for the better — thank you Chantelle and Jourdy!',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+]
+
+export function mergeSeedStories(stories, { publicOnly = false, privatePortal = false } = {}) {
+  let seeds = SEED_SUCCESS_STORIES
+  if (publicOnly) seeds = seeds.filter(s => s.is_public)
+  if (stories.length > 0) return stories
+  return seeds.map(s => ({
+    ...s,
+    content: privatePortal ? (s.content_private || s.content) : s.content,
+  }))
+}
+
+export function mergeSeedReviews(reviews, { publicOnly = false, privatePortal = false } = {}) {
+  let seeds = SEED_REVIEWS
+  if (publicOnly) seeds = seeds.filter(r => r.is_public)
+  if (reviews.length > 0) return reviews
+  return seeds.map(r => ({
+    ...r,
+    content: privatePortal ? (r.content_private || r.content) : r.content,
+  }))
+}
