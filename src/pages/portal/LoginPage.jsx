@@ -59,8 +59,11 @@ export default function LoginPage() {
         <Button type="submit" loading={loading} className="w-full" size="lg">Sign In</Button>
       </form>
       <p className="text-center text-sm text-text-muted mt-6">
-        Need access?{' '}
-        <Link to="/private-portal/register" className="text-primary font-semibold hover:underline">Request access</Link>
+        Portal access is by invitation only.{' '}
+        <a href={brand.contact.whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-primary font-semibold hover:underline">
+          Contact the team
+        </a>
+        {' '}if you need an invite.
       </p>
     </Card>
   )
