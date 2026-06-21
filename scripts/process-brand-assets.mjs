@@ -111,6 +111,33 @@ async function processProduct() {
   console.log('Product processed → src/assets/portal/retatrutide-30mg.png')
 }
 
+async function processOgImage() {
+  const logoBuf = await sharp(join(publicDir, 'logo.png')).resize(280, 280).png().toBuffer()
+
+  const svg = `
+    <svg width="1200" height="630" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#145A4A"/>
+          <stop offset="50%" style="stop-color:#1E6B5C"/>
+          <stop offset="100%" style="stop-color:#2A9D8F"/>
+        </linearGradient>
+      </defs>
+      <rect width="1200" height="630" fill="url(#bg)"/>
+      <circle cx="600" cy="260" r="130" fill="white" opacity="0.95"/>
+      <text x="600" y="460" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="700" fill="white">Wellness Lab</text>
+      <text x="600" y="520" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="white" opacity="0.9">Peptides · Wellness · Research · UK</text>
+    </svg>`
+
+  await sharp(Buffer.from(svg))
+    .composite([{ input: logoBuf, top: 130, left: 460 }])
+    .png()
+    .toFile(join(publicDir, 'og-image.png'))
+
+  console.log('OG image → public/og-image.png')
+}
+
 await processLogo()
+await processOgImage()
 await processProduct()
 console.log('Done.')

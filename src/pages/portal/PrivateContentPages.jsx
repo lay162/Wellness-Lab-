@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Star } from 'lucide-react'
 import { supabase } from '../../lib/supabase'
-import { mergeSeedReviews, mergeSeedStories } from '../../data/seedStories'
+import { mergeSeedReviews, mergeSeedStories } from '../../lib/websiteContent'
 import Card from '../../components/ui/Card'
-import BeforeAfterCard from '../../components/ui/BeforeAfterCard'
+import { StoryBeforeAfter, ReviewCardContent } from '../../components/ui/ContentMedia'
 import { SkeletonCard } from '../../components/ui/Skeleton'
 
 export function PrivateReviewsPage() {
@@ -27,14 +27,14 @@ export function PrivateReviewsPage() {
       ) : reviews.length > 0 ? (
         <div className="grid md:grid-cols-2 gap-6">
           {reviews.map(r => (
-            <Card key={r.id} className="p-6">
+            <Card key={r.id} className="p-6 overflow-hidden">
               <div className="flex gap-1 mb-3">
                 {Array.from({ length: r.rating || 5 }).map((_, i) => (
                   <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                 ))}
               </div>
-              <p className="text-sm text-text-muted mb-4 leading-relaxed">{r.content}</p>
-              <p className="font-medium text-sm">{r.author_name}</p>
+              <ReviewCardContent review={r} privatePortal />
+              <p className="font-medium text-sm">{r.author_name || 'Verified client'}</p>
             </Card>
           ))}
         </div>
@@ -67,15 +67,11 @@ export function PrivateSuccessStoriesPage() {
         <div className="space-y-8">
           {stories.map(s => (
             <Card key={s.id} className="overflow-hidden">
-              {(s.before_image || s.after_image) && (
-                <div className="p-4 pb-0 max-w-lg">
-                  <BeforeAfterCard before={s.before_image} after={s.after_image} author={s.author_name} />
-                </div>
-              )}
+              <StoryBeforeAfter story={s} className="p-4 pb-0 max-w-lg" />
               <div className="p-6">
                 <h3 className="font-semibold text-lg text-text mb-2">{s.title}</h3>
                 {s.author_name && <p className="text-sm text-primary mb-3">{s.author_name}</p>}
-                <div className="text-sm text-text-muted prose-content" dangerouslySetInnerHTML={{ __html: s.content }} />
+                <div className="text-sm text-text-muted prose-content" dangerouslySetInnerHTML={{ __html: s.content_private || s.content }} />
               </div>
             </Card>
           ))}

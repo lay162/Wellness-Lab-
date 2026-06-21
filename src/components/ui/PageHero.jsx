@@ -39,15 +39,21 @@ export function SectionHeader({ title, subtitle, linkTo, linkLabel = 'View all' 
 }
 
 // React Router Link variant
-export function SectionHeaderLink({ title, subtitle, to, linkLabel = 'View all' }) {
+export function SectionHeaderLink({ title, subtitle, to, linkLabel = 'View all', centered = true }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-      <div>
+    <div className={cn('mb-10', centered ? 'text-center' : 'flex flex-col sm:flex-row sm:items-end justify-between gap-4')}>
+      <div className={centered ? 'max-w-2xl mx-auto' : undefined}>
         <h2 className="text-3xl font-bold text-text tracking-tight">{title}</h2>
-        {subtitle && <p className="text-text-muted mt-2 max-w-xl">{subtitle}</p>}
+        {subtitle && <p className={cn('text-text-muted mt-2', centered && 'mx-auto max-w-xl')}>{subtitle}</p>}
       </div>
       {to && (
-        <Link to={to} className="text-primary font-medium flex items-center gap-1.5 hover:gap-2.5 transition-all shrink-0 group">
+        <Link
+          to={to}
+          className={cn(
+            'text-primary font-medium inline-flex items-center gap-1.5 hover:gap-2.5 transition-all group',
+            centered ? 'mt-4' : 'shrink-0'
+          )}
+        >
           {linkLabel}
           <span className="group-hover:translate-x-0.5 transition-transform">→</span>
         </Link>

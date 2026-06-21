@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
-import { mergeSeedStories } from '../../data/seedStories'
+import { mergeSeedStories } from '../../lib/websiteContent'
 import Card, { CardBody } from '../../components/ui/Card'
-import BeforeAfterCard from '../../components/ui/BeforeAfterCard'
+import { StoryBeforeAfter } from '../../components/ui/ContentMedia'
 import PageHero from '../../components/ui/PageHero'
 import { SkeletonCard } from '../../components/ui/Skeleton'
 import brand from '../../config/brand'
@@ -39,11 +39,7 @@ export default function SuccessStoriesPage() {
           <div className="grid md:grid-cols-2 gap-8">
             {stories.map(s => (
               <Card key={s.id} className="overflow-hidden">
-                {(s.before_image || s.after_image) && (
-                  <div className="p-4 pb-0">
-                    <BeforeAfterCard before={s.before_image} after={s.after_image} author={s.author_name} />
-                  </div>
-                )}
+                <StoryBeforeAfter story={s} className="p-4 pb-0" />
                 <CardBody>
                   <h3 className="font-semibold text-lg text-text mb-1">{s.title}</h3>
                   {s.author_name && <p className="text-xs text-primary font-medium mb-3">{s.author_name}</p>}

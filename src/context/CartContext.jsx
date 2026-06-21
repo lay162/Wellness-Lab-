@@ -1,39 +1,35 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react'
-import { useAuth } from './AuthContext'
+import { productHasPrice } from '../lib/utils'
+import { normalizeProduct } from '../lib/products'
 
 const CartContext = createContext(null)
 
 const CART_KEY = 'wl_cart'
 
 export function CartProvider({ children }) {
-  const { isApproved } = useAuth()
   const [items, setItems] = useState([])
 
   useEffect(() => {
-    if (isApproved) {
-      const saved = localStorage.getItem(CART_KEY)
-      if (saved) {
-        try { setItems(JSON.parse(saved)) } catch { /* ignore */ }
-      }
-    } else {
-      setItems([])
-      localStorage.removeItem(CART_KEY)
+    const saved = localStorage.getItem(CART_KEY)
+    if (saved) {
+      try { setItems(JSON.parse(saved)) } catch { /* ignore */ }
     }
-  }, [isApproved])
+  }, [])
 
   useEffect(() => {
-    if (isApproved) localStorage.setItem(CART_KEY, JSON.stringify(items))
-  }, [items, isApproved])
+    localStorage.setItem(CART_KEY, JSON.stringify(items))
+  }, [items])
 
   const addItem = useCallback((product, quantity = 1) => {
+    const item = normalizeProduct(product)
     setItems(prev => {
-      const existing = prev.find(i => i.id === product.id)
+      const existing = prev.find(i => i.id === item.id)
       if (existing) {
         return prev.map(i =>
-          i.id === product.id ? { ...i, quantity: i.quantity + quantity } : i
+          i.id === item.id ? { ...i, quantity: i.quantity + quantity } : i
         )
       }
-      return [...prev, { ...product, quantity }]
+      return [...prev, { ...item, quantity }]
     })
   }, [])
 
@@ -51,7 +47,10 @@ export function CartProvider({ children }) {
 
   const clearCart = useCallback(() => setItems([]), [])
 
-  const total = items.reduce((sum, i) => sum + i.price * i.quantity, 0)
+  const total = items.reduce((sum, i) => {
+    if (!productHasPrice(i)) return sum
+    return sum + (Number(i.price) || 0) * i.quantity
+  }, 0)
   const itemCount = items.reduce((sum, i) => sum + i.quantity, 0)
 
   return (

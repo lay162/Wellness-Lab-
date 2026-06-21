@@ -7,6 +7,7 @@ import Card, { CardBody } from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
 import { formatCurrency, formatDate, ORDER_STATUS_LABELS } from '../../lib/utils'
 import { PageLoader } from '../../components/ui/Skeleton'
+import { shopPaths } from '../../lib/shopPaths'
 
 export default function DashboardPage() {
   const { profile } = useAuth()
@@ -30,9 +31,9 @@ export default function DashboardPage() {
   if (loading) return <PageLoader />
 
   const stats = [
-    { icon: Package, label: 'Products Available', value: productCount, to: '/private-portal/catalogue' },
-    { icon: ClipboardList, label: 'Total Orders', value: orders.length, to: '/private-portal/orders' },
-    { icon: ShoppingBag, label: 'Browse Catalogue', value: '→', to: '/private-portal/catalogue' },
+    { icon: Package, label: 'Products Available', value: productCount, to: shopPaths.catalogue },
+    { icon: ClipboardList, label: 'Total Orders', value: orders.length, to: shopPaths.orders },
+    { icon: ShoppingBag, label: 'Browse shop', value: '→', to: shopPaths.catalogue },
   ]
 
   return (
@@ -75,7 +76,7 @@ export default function DashboardPage() {
       ) : (
         <Card className="p-8 text-center">
           <p className="text-text-muted mb-4">No orders yet</p>
-          <Link to="/private-portal/catalogue" className="text-primary font-medium hover:underline">Browse the catalogue</Link>
+          <Link to={shopPaths.catalogue} className="text-primary font-medium hover:underline">Browse the shop</Link>
         </Card>
       )}
     </div>

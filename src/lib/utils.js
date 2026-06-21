@@ -7,8 +7,16 @@ export function formatCurrency(amount) {
 }
 
 export function formatProductPrice(product) {
-  if (product?.price_on_enquiry || !product?.price) return 'Price on enquiry'
-  return formatCurrency(product.price)
+  if (product?.price_on_enquiry) return 'Price on enquiry'
+  const amount = Number(product?.price)
+  if (!Number.isFinite(amount) || amount <= 0) return 'Price on enquiry'
+  return formatCurrency(amount)
+}
+
+export function productHasPrice(product) {
+  if (product?.price_on_enquiry) return false
+  const amount = Number(product?.price)
+  return Number.isFinite(amount) && amount > 0
 }
 
 export function formatDate(date) {

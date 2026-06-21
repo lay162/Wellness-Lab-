@@ -1,8 +1,2 @@
-export {
-  SEED_PRODUCTS,
-  mergeSeedProducts,
-  getSeedProduct,
-  isSeedProduct,
-  mergeSeedProducts as mergeDemoProduct,
-  isSeedProduct as isDemoProduct,
-} from '../data/seedProducts'
+export { SEED_PRODUCTS, getSeedProduct, isSeedProduct } from '../data/seedProducts'
+export { mergeSeedProducts, mergeSeedProducts as mergeDemoProduct, isSeedProduct as isDemoProduct } from './products'

@@ -1,22 +1,131 @@
 <!doctype html>
-<html lang="en">
+<html lang="en-GB">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#2D6A4F" />
-    <meta name="description" content="Wellness Lab — Premium wellness, thoughtfully delivered" />
+    <meta name="theme-color" content="#1E6B5C" />
+    <meta name="description" content="Wellness Lab — UK peptide research, wellness education & shop. GLP-1, sermorelin, NAD+, BPC-157 & recovery support for gyms, athletes & wellness journeys nationwide." />
+    <meta name="keywords" content="Wellness Lab UK, peptides UK, GLP-1 UK, gym wellness, bodybuilding recovery, peptide shop UK, wellness research" />
+    <meta name="author" content="Wellness Lab" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="geo.region" content="GB" />
+    <meta name="geo.placename" content="United Kingdom" />
+    <meta name="language" content="English" />
+
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+    <link rel="apple-touch-icon" href="/app-icon-192.png" sizes="192x192" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
-    <meta name="apple-mobile-web-app-title" content="WL Portal" />
-    <link rel="apple-touch-icon" href="/app-icon-192.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Wellness Lab" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-1290x2796.png" media="(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-1170x2532.png" media="(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-1284x2778.png" media="(device-width: 428px) and (device-height: 926px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-828x1792.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-1242x2688.png" media="(device-width: 414px) and (device-height: 896px) and (-webkit-device-pixel-ratio: 3) and (orientation: portrait)" />
+    <link rel="apple-touch-startup-image" href="/splash/apple-750x1334.png" media="(device-width: 375px) and (device-height: 667px) and (-webkit-device-pixel-ratio: 2) and (orientation: portrait)" />
+
+    <style>
+      #app-splash {
+        position: fixed;
+        inset: 0;
+        z-index: 99999;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 1.25rem;
+        background: linear-gradient(135deg, #145A4A 0%, #1E6B5C 40%, #2A9D8F 75%, #7CB342 100%);
+        transition: opacity 0.35s ease, visibility 0.35s ease;
+      }
+      #app-splash.hide {
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+      }
+      #app-splash img {
+        width: 5.5rem;
+        height: 5.5rem;
+        border-radius: 50%;
+        object-fit: cover;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        border: 3px solid rgba(255, 255, 255, 0.35);
+      }
+      #app-splash p {
+        margin: 0;
+        color: rgba(255, 255, 255, 0.95);
+        font-family: Georgia, 'Times New Roman', serif;
+        font-size: 1.35rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+      }
+      #app-splash .splash-bar {
+        width: 2rem;
+        height: 2rem;
+        border: 3px solid rgba(255, 255, 255, 0.25);
+        border-top-color: white;
+        border-radius: 50%;
+        animation: splash-spin 0.75s linear infinite;
+      }
+      @keyframes splash-spin {
+        to { transform: rotate(360deg); }
+      }
+    </style>
+    <script>
+      window.__WL_IS_PWA__ = window.matchMedia('(display-mode: standalone)').matches
+        || window.navigator.standalone === true;
+    </script>
+
+    <meta property="og:site_name" content="Wellness Lab" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thewellnesslab.uk/" />
+    <meta property="og:title" content="Wellness Lab | Peptides, Wellness & Research Shop UK" />
+    <meta property="og:description" content="UK peptide research, wellness education & shop — for gyms, athletes & wellness journeys nationwide." />
+    <meta property="og:image" content="https://thewellnesslab.uk/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_GB" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Wellness Lab | Peptides, Wellness & Research Shop UK" />
+    <meta name="twitter:description" content="UK peptide research, wellness education & shop — for gyms, athletes & wellness journeys nationwide." />
+    <meta name="twitter:image" content="https://thewellnesslab.uk/og-image.png" />
+
+    <link rel="canonical" href="https://thewellnesslab.uk/" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <title>Wellness Lab</title>
+    <title>Wellness Lab | Peptides, Wellness & Research Shop UK</title>
   </head>
   <body>
+    <script>
+      (function () {
+        var p = window.location.pathname;
+        if (
+          p === '/BusinessCard' || p === '/BusinessCard/' || p === '/BusinessCard/index.html' ||
+          p === '/card' || p === '/card/' || p === '/businesscard/index.html' ||
+          p === '/businesscard'
+        ) {
+          window.location.replace('/businesscard/');
+        }
+      })();
+    </script>
     <div id="root"></div>
+    <script>
+      (function () {
+        if (!window.__WL_IS_PWA__) return;
+        var root = document.getElementById('root');
+        var splash = document.createElement('div');
+        splash.id = 'app-splash';
+        splash.setAttribute('aria-hidden', 'true');
+        splash.innerHTML =
+          '<img src="/logo.png" alt="" width="88" height="88" />' +
+          '<p>Wellness Lab</p>' +
+          '<div class="splash-bar" role="presentation"></div>';
+        document.body.insertBefore(splash, root);
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

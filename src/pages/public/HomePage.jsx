@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { ArrowRight, Leaf, Shield, Heart, Users, Star, Award, CheckCircle2 } from 'lucide-react'
+import { ArrowRight, Leaf, Shield, Heart, Users, Star, Award } from 'lucide-react'
 import brand from '../../config/brand'
 import Button from '../../components/ui/Button'
 import Card, { CardBody, FeatureCard } from '../../components/ui/Card'
@@ -7,21 +7,23 @@ import { SectionHeaderLink } from '../../components/ui/PageHero'
 import EmptyState from '../../components/ui/EmptyState'
 import { useEffect, useState } from 'react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
-import { mergeSeedReviews, mergeSeedStories } from '../../data/seedStories'
-import BeforeAfterCard from '../../components/ui/BeforeAfterCard'
+import { mergeSeedReviews, mergeSeedStories } from '../../lib/websiteContent'
+import { mergeSeedBlogPosts } from '../../lib/blogContent'
+import BlogCardImage from '../../components/ui/BlogCardImage'
+import { StoryBeforeAfter, ReviewCardContent } from '../../components/ui/ContentMedia'
 import { SkeletonCard } from '../../components/ui/Skeleton'
-import SocialLinks from '../../components/ui/SocialLinks'
-
-const trustBadges = [
-  { icon: Award, label: 'Premium Quality' },
-  { icon: Shield, label: 'Fully Compliant' },
-  { icon: CheckCircle2, label: 'Trusted Partner' },
-]
+import SocialLinks, { HeroDownloadAppButton } from '../../components/ui/SocialLinks'
+import InstallAppPanel from '../../components/ui/InstallAppPanel'
+import { usePageContent, useAllPageCards, getLucideIcon } from '../../lib/siteContent'
 
 export default function HomePage() {
+  const { meta } = usePageContent('home')
+  const { groups } = useAllPageCards('home')
+  const features = groups.features || []
+  const trustBadges = groups.trust || []
   const [reviews, setReviews] = useState(() => mergeSeedReviews([], { publicOnly: true }).slice(0, 3))
   const [stories, setStories] = useState(() => mergeSeedStories([], { publicOnly: true }).slice(0, 3))
-  const [posts, setPosts] = useState([])
+  const [posts, setPosts] = useState(() => mergeSeedBlogPosts([], { publicOnly: true }).slice(0, 3))
   const [loading, setLoading] = useState(isSupabaseConfigured)
 
   useEffect(() => {
@@ -34,18 +36,11 @@ export default function HomePage() {
       ])
       setReviews(mergeSeedReviews(r.data || [], { publicOnly: true }))
       setStories(mergeSeedStories(s.data || [], { publicOnly: true }))
-      setPosts(b.data || [])
+      setPosts(mergeSeedBlogPosts(b.data || [], { publicOnly: true }).slice(0, 3))
       setLoading(false)
     }
     load()
   }, [])
-
-  const features = [
-    { icon: Leaf, title: 'Holistic Wellness', desc: 'Evidence-informed guidance for your wellbeing journey.' },
-    { icon: Shield, title: 'Trusted & Compliant', desc: 'Fully compliant operations with transparent practices.' },
-    { icon: Heart, title: 'Personalised Care', desc: 'Tailored support designed around your unique needs.' },
-    { icon: Users, title: 'Expert Team', desc: 'Dedicated professionals committed to your success.' },
-  ]
 
   return (
     <div>
@@ -56,47 +51,69 @@ export default function HomePage() {
           <div className="absolute bottom-10 left-10 w-96 h-96 rounded-full bg-secondary/10 blur-3xl" />
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full border border-white/5" />
         </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-36">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in-up">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-secondary text-sm font-medium mb-6">
-                <Leaf className="w-4 h-4" />
-                {brand.tagline}
-              </div>
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 text-balance leading-[1.1] tracking-tight">
-                Your journey to better wellness starts here
-              </h1>
-              <p className="text-lg text-white/75 mb-8 leading-relaxed max-w-lg">
-                {brand.description}
-              </p>
-              <div className="inline-flex flex-col items-center gap-6">
-                <div className="flex flex-wrap gap-4 justify-center">
-                  <Link to="/wellness"><Button size="lg">Explore Wellness</Button></Link>
-                  <Link to="/contact"><Button variant="secondary" size="lg">Get in Touch</Button></Link>
-                </div>
-                <SocialLinks variant="hero" size="md" className="justify-center" nowrap />
-              </div>
-            </div>
-            <div className="hidden lg:flex justify-center animate-fade-in-up animate-stagger-2">
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
+          <div className="flex flex-col animate-fade-in-up">
+            {/* Logo first — above badge on all screen sizes */}
+            <div className="flex justify-center mb-6 sm:mb-8">
               <div className="relative">
-                <div className="w-80 h-80 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center p-8 shadow-2xl">
+                <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center p-6 sm:p-7 lg:p-8 shadow-2xl">
                   <img src={brand.logo} alt={brand.name} className="w-full h-full rounded-full object-cover shadow-lg" />
                 </div>
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-5 py-2.5 rounded-full glass-dark text-white text-sm font-medium shadow-xl whitespace-nowrap">
+                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-dark text-white text-xs sm:text-sm font-medium shadow-xl whitespace-nowrap">
                   Trusted wellness partner
+                </div>
+              </div>
+            </div>
+
+            {/* Badge, headline, actions — centred under logo on all screen sizes */}
+            <div className="flex flex-col items-center text-center mx-auto max-w-3xl w-full">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 border border-white/15 text-secondary text-sm font-medium mb-5 sm:mb-6">
+                <Leaf className="w-4 h-4 shrink-0" />
+                <span>{meta.badge_text || brand.tagline}</span>
+              </div>
+              <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-bold mb-5 sm:mb-6 text-balance leading-[1.1] tracking-tight max-w-3xl">
+                {meta.hero_title}
+              </h1>
+              <p className="text-base sm:text-lg text-white/75 mb-8 leading-relaxed max-w-2xl mx-auto">
+                {meta.hero_subtitle || brand.description}
+                {!meta.hero_subtitle && (
+                  <>
+                    <br />
+                    <span className="text-white/60">{brand.descriptionNote}</span>
+                  </>
+                )}
+              </p>
+              <div className="flex flex-col items-center gap-5 sm:gap-6 w-full">
+                <div className="flex flex-wrap gap-3 sm:gap-4 justify-center w-full max-w-sm sm:max-w-none">
+                  <Link to="/wellness" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto justify-center">Explore Wellness</Button>
+                  </Link>
+                  <Link to="/contact" className="w-full sm:w-auto">
+                    <Button variant="secondary" size="lg" className="w-full sm:w-auto justify-center">Get in Touch</Button>
+                  </Link>
+                </div>
+                <div className="flex items-center justify-center gap-2 flex-nowrap">
+                  <HeroDownloadAppButton size="md" />
+                  <SocialLinks variant="hero" size="md" className="justify-center" nowrap />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Trust badges */}
-          <div className="flex flex-wrap gap-6 mt-16 pt-8 border-t border-white/10 animate-fade-in-up animate-stagger-3">
-            {trustBadges.map(b => (
-              <div key={b.label} className="flex items-center gap-2.5 text-white/70 text-sm">
-                <b.icon className="w-5 h-5 text-secondary" />
-                {b.label}
-              </div>
-            ))}
+          <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-16 pt-8 border-t border-white/10 w-full animate-fade-in-up animate-stagger-3">
+            {trustBadges.map(b => {
+              const Icon = getLucideIcon(b.icon, Award)
+              return (
+                <div
+                  key={b.id}
+                  className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/10 border border-white/15 text-white/80 text-sm"
+                >
+                  <Icon className="w-4 h-4 text-secondary shrink-0" />
+                  <span>{b.title}</span>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
@@ -106,16 +123,17 @@ export default function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <h2 className="font-display text-3xl lg:text-4xl font-bold text-text mb-4 tracking-tight">
-              Why Choose {brand.name}?
+              {meta.section_title}
             </h2>
             <p className="text-text-muted max-w-2xl mx-auto leading-relaxed">
-              We combine expertise, compassion, and compliance to deliver exceptional wellness support.
+              {meta.section_subtitle}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {features.map((f) => (
-              <FeatureCard key={f.title} {...f} />
-            ))}
+            {features.map((f) => {
+              const Icon = getLucideIcon(f.icon, Leaf)
+              return <FeatureCard key={f.id} icon={Icon} title={f.title} desc={f.description} />
+            })}
           </div>
         </div>
       </section>
@@ -130,9 +148,7 @@ export default function HomePage() {
             <div className="grid md:grid-cols-2 gap-8">
               {stories.map(s => (
                 <Card key={s.id} hover className="overflow-hidden group">
-                  <div className="p-4 pb-0">
-                    <BeforeAfterCard before={s.before_image} after={s.after_image} author={s.author_name} />
-                  </div>
+                  <StoryBeforeAfter story={s} className="p-4 pb-0" />
                   <CardBody>
                     <h3 className="font-semibold text-text mb-2 group-hover:text-primary transition-colors">{s.title}</h3>
                     <p className="text-sm text-text-muted line-clamp-3 leading-relaxed">
@@ -157,15 +173,15 @@ export default function HomePage() {
           ) : reviews.length > 0 ? (
             <div className="grid md:grid-cols-3 gap-6">
               {reviews.map(r => (
-                <Card key={r.id} className="p-7 hover-lift relative">
+                <Card key={r.id} className="p-7 hover-lift relative overflow-hidden">
                   <div className="absolute top-6 right-6 text-4xl text-primary/10 font-display leading-none">"</div>
                   <div className="flex gap-1 mb-4">
                     {Array.from({ length: r.rating || 5 }).map((_, i) => (
                       <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <p className="text-sm text-text-muted mb-5 line-clamp-4 leading-relaxed italic">{r.content}</p>
-                  <p className="font-semibold text-sm text-text">{r.author_name}</p>
+                  <ReviewCardContent review={r} className="italic" />
+                  <p className="font-semibold text-sm text-text">{r.author_name || 'Verified client'}</p>
                 </Card>
               ))}
             </div>
@@ -184,22 +200,11 @@ export default function HomePage() {
           ) : posts.length > 0 ? (
             <div className="grid md:grid-cols-3 gap-6">
               {posts.map(p => (
-                <Link key={p.id} to={`/blog/${p.slug}`}>
-                  <Card hover className="overflow-hidden h-full group">
-                    {p.image_url ? (
-                      <div className="overflow-hidden">
-                        <img src={p.image_url} alt="" className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500" />
-                      </div>
-                    ) : (
-                      <div className="w-full h-52 bg-gradient-to-br from-primary/5 to-accent flex items-center justify-center">
-                        <Leaf className="w-10 h-10 text-primary/20" />
-                      </div>
-                    )}
+                <Link key={p.id} to={`/blog/${p.slug}`} className="group">
+                  <Card hover className="overflow-hidden h-full">
+                    <BlogCardImage post={p} />
                     <CardBody>
-                      {p.category && (
-                        <span className="text-xs font-semibold text-primary uppercase tracking-wider">{p.category}</span>
-                      )}
-                      <h3 className="font-semibold text-text mt-1.5 mb-2 group-hover:text-primary transition-colors">{p.title}</h3>
+                      <h3 className="font-semibold text-text mb-2 group-hover:text-primary transition-colors">{p.title}</h3>
                       <p className="text-sm text-text-muted line-clamp-2 leading-relaxed">{p.excerpt}</p>
                     </CardBody>
                   </Card>
@@ -212,6 +217,21 @@ export default function HomePage() {
         </div>
       </section>
 
+      {/* Download app */}
+      <section className="py-24 bg-white">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-10">
+            <h2 className="font-display text-3xl lg:text-4xl font-bold text-text mb-4 tracking-tight">
+              {meta.extra_title}
+            </h2>
+            <p className="text-text-muted max-w-xl mx-auto leading-relaxed">
+              {meta.extra_subtitle}
+            </p>
+          </div>
+          <InstallAppPanel compact className="max-w-lg mx-auto" />
+        </div>
+      </section>
+
       {/* CTA */}
       <section className="relative overflow-hidden gradient-hero text-white py-24">
         <div className="absolute inset-0 pointer-events-none">
@@ -219,10 +239,10 @@ export default function HomePage() {
         </div>
         <div className="relative max-w-3xl mx-auto px-4 text-center animate-fade-in">
           <h2 className="font-display text-3xl lg:text-4xl font-bold mb-4 tracking-tight">
-            Ready to begin your wellness journey?
+            {meta.cta_title}
           </h2>
           <p className="text-white/75 mb-8 text-lg leading-relaxed">
-            Get in touch with our team to learn more about how we can support you.
+            {meta.cta_subtitle}
           </p>
           <Link to="/contact">
             <Button size="lg" variant="secondary">

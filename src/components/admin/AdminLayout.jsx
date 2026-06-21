@@ -1,24 +1,60 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
-  LayoutDashboard, Users, Package, ClipboardList, FileText, Star,
-  Trophy, Heart, Settings, Scale, LogOut, Menu, X,
+  LayoutDashboard, Users, UserCog, Package, ClipboardList, FileText, Star,
+  Trophy, Heart, Settings, Scale, LogOut, Menu, PoundSterling, Globe,
+  Layout, HelpCircle, Lightbulb,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import brand from '../../config/brand'
 
-const navItems = [
-  { to: '/private-admin', icon: LayoutDashboard, label: 'Dashboard', end: true },
+const shopNav = [
   { to: '/private-admin/customers', icon: Users, label: 'Customers' },
+  { to: '/private-admin/team', icon: UserCog, label: 'Shop Team' },
   { to: '/private-admin/products', icon: Package, label: 'Products' },
   { to: '/private-admin/orders', icon: ClipboardList, label: 'Orders' },
-  { to: '/private-admin/blog', icon: FileText, label: 'Blog' },
-  { to: '/private-admin/reviews', icon: Star, label: 'Reviews' },
-  { to: '/private-admin/success-stories', icon: Trophy, label: 'Success Stories' },
-  { to: '/private-admin/aftercare', icon: Heart, label: 'Aftercare' },
-  { to: '/private-admin/settings', icon: Settings, label: 'Settings' },
-  { to: '/private-admin/legal', icon: Scale, label: 'Legal Pages' },
+  { to: '/private-admin/earnings', icon: PoundSterling, label: 'Earnings' },
 ]
+
+const websiteNav = [
+  { to: '/private-admin/website', icon: Globe, label: 'Overview', end: true },
+  { to: '/private-admin/website/pages', icon: Layout, label: 'Page content' },
+  { to: '/private-admin/website/blog', icon: FileText, label: 'Blog' },
+  { to: '/private-admin/website/reviews', icon: Star, label: 'Reviews' },
+  { to: '/private-admin/website/success-stories', icon: Trophy, label: 'Before & After' },
+  { to: '/private-admin/website/aftercare', icon: Heart, label: 'Aftercare' },
+  { to: '/private-admin/website/faqs', icon: HelpCircle, label: 'FAQs' },
+  { to: '/private-admin/website/wellness-advice', icon: Lightbulb, label: 'App advice' },
+  { to: '/private-admin/website/legal', icon: Scale, label: 'Legal Pages' },
+]
+
+function NavSection({ title, items, onNavigate }) {
+  return (
+    <div className="pt-4 first:pt-0">
+      <p className="px-4 mb-2 text-[10px] font-semibold uppercase tracking-wider text-text-muted/70">
+        {title}
+      </p>
+      <div className="space-y-1">
+        {items.map(item => (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={item.end}
+            onClick={onNavigate}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                isActive ? 'bg-primary-dark text-white' : 'text-text-muted hover:bg-gray-50 hover:text-text'
+              }`
+            }
+          >
+            <item.icon className="w-5 h-5 shrink-0" />
+            {item.label}
+          </NavLink>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function AdminLayout() {
   const { signOut, profile } = useAuth()
@@ -29,6 +65,8 @@ export default function AdminLayout() {
     await signOut()
     navigate('/private-portal/login')
   }
+
+  const closeMobile = () => setSidebarOpen(false)
 
   const NavContent = () => (
     <>
@@ -41,23 +79,40 @@ export default function AdminLayout() {
           </div>
         </div>
       </div>
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {navItems.map(item => (
+      <nav className="flex-1 p-4 overflow-y-auto">
+        <div className="space-y-1 mb-2">
           <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            onClick={() => setSidebarOpen(false)}
+            to="/private-admin"
+            end
+            onClick={closeMobile}
             className={({ isActive }) =>
               `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
                 isActive ? 'bg-primary-dark text-white' : 'text-text-muted hover:bg-gray-50 hover:text-text'
               }`
             }
           >
-            <item.icon className="w-5 h-5 shrink-0" />
-            {item.label}
+            <LayoutDashboard className="w-5 h-5 shrink-0" />
+            Dashboard
           </NavLink>
-        ))}
+        </div>
+        <div>
+          <NavSection title="Shop" items={shopNav} onNavigate={closeMobile} />
+          <NavSection title="Website management" items={websiteNav} onNavigate={closeMobile} />
+        </div>
+        <div className="pt-4 space-y-1">
+          <NavLink
+            to="/private-admin/settings"
+            onClick={closeMobile}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
+                isActive ? 'bg-primary-dark text-white' : 'text-text-muted hover:bg-gray-50 hover:text-text'
+              }`
+            }
+          >
+            <Settings className="w-5 h-5 shrink-0" />
+            Settings
+          </NavLink>
+        </div>
       </nav>
       <div className="p-4 border-t border-gray-100">
         <p className="text-xs text-text-muted px-4 mb-2 truncate">{profile?.full_name}</p>

@@ -1,7 +1,8 @@
 import { useAuth } from '../../context/AuthContext'
 import Card from '../../components/ui/Card'
 import Button from '../../components/ui/Button'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
+import { Lock } from 'lucide-react'
 
 export default function SettingsPage() {
   const { signOut, profile } = useAuth()
@@ -20,6 +21,15 @@ export default function SettingsPage() {
           <h2 className="font-semibold text-text mb-2">Account</h2>
           <p className="text-sm text-text-muted mb-4">Signed in as {profile?.email}</p>
           <Button variant="danger" onClick={handleSignOut}>Sign Out</Button>
+        </div>
+        <div className="pt-6 border-t border-gray-100">
+          <h2 className="font-semibold text-text mb-2">Security</h2>
+          <p className="text-sm text-text-muted mb-4">Update your account password.</p>
+          <Link to="/private-portal/change-password">
+            <Button variant="secondary">
+              <Lock className="w-4 h-4" /> Change password
+            </Button>
+          </Link>
         </div>
         <div className="pt-6 border-t border-gray-100">
           <h2 className="font-semibold text-text mb-2">Notifications</h2>

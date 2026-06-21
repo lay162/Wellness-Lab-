@@ -1,5 +1,9 @@
+import { useEffect, useState } from 'react'
 import brand from '../../config/brand'
 import { cn } from '../../lib/utils'
+import { isAppInstalled } from '../../lib/pwaInstall'
+import { Link, useLocation } from 'react-router-dom'
+import { Smartphone } from 'lucide-react'
 
 export function WhatsAppIcon({ className }) {
   return (
@@ -99,6 +103,55 @@ export default function SocialLinks({ variant = 'dark', size = 'md', className, 
         </a>
       ))}
     </div>
+  )
+}
+
+export function HeroDownloadAppButton({ size = 'md', className }) {
+  const s = sizes[size] || sizes.md
+  const v = variants.hero
+
+  return (
+    <Link
+      to="/get-app"
+      aria-label="Download our app"
+      title="Download our app"
+      className={cn(
+        'inline-flex shrink-0 items-center justify-center rounded-full transition-colors duration-200 ring-1',
+        s.btn,
+        v.link,
+        v.ring,
+        className
+      )}
+    >
+      <Smartphone className={s.icon} />
+    </Link>
+  )
+}
+
+/** Fixed FAB — top-right below sticky header so it stays visible (WhatsApp stays bottom-right) */
+export function DownloadAppFloat() {
+  const { pathname } = useLocation()
+  const [installed, setInstalled] = useState(false)
+
+  useEffect(() => {
+    setInstalled(isAppInstalled())
+  }, [])
+
+  if (installed || pathname === '/get-app') return null
+
+  return (
+    <Link
+      to="/get-app"
+      aria-label="Download our app"
+      title="Download our app"
+      className="fixed top-[4.75rem] lg:top-[5rem] right-4 sm:right-6 z-30 flex items-center justify-center w-14 h-14 rounded-full overflow-hidden bg-white shadow-lg shadow-primary-dark/30 hover:scale-105 hover:shadow-xl transition-all duration-200 ring-2 ring-primary/20"
+    >
+      <img
+        src={brand.appIcon192}
+        alt=""
+        className="w-full h-full object-cover"
+      />
+    </Link>
   )
 }
 

@@ -1,6 +1,15 @@
 {
+  "redirects": [
+    { "source": "/BusinessCard", "destination": "/businesscard", "permanent": true },
+    { "source": "/BusinessCard/", "destination": "/businesscard", "permanent": true },
+    { "source": "/BusinessCard/index.html", "destination": "/businesscard", "permanent": true },
+    { "source": "/card", "destination": "/businesscard", "permanent": true },
+    { "source": "/card/", "destination": "/businesscard", "permanent": true },
+    { "source": "/businesscard/index.html", "destination": "/businesscard", "permanent": true }
+  ],
   "rewrites": [
-    { "source": "/((?!assets|icons|favicon|app-icon|logo|offline|sw|workbox|manifest).*)", "destination": "/index.html" }
+    { "source": "/businesscard", "destination": "/businesscard/index.html" },
+    { "source": "/((?!assets|icons|favicon|app-icon|logo|og-image|offline|sw|workbox|manifest|robots\\.txt|sitemap\\.xml|businesscard).*)", "destination": "/index.html" }
   ],
   "headers": [
     {

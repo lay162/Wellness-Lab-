@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   LayoutDashboard, ShoppingBag, Package, ShoppingCart, ClipboardList,
   Star, Trophy, Heart, Lightbulb, User, Settings, LogOut, Menu, X, Download,
@@ -9,11 +9,12 @@ import { useCart } from '../../context/CartContext'
 import { usePWA } from '../../hooks/usePWA'
 import brand from '../../config/brand'
 import { useEffect } from 'react'
+import { shopPaths } from '../../lib/shopPaths'
 
 const navItems = [
   { to: '/private-portal/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/private-portal/catalogue', icon: ShoppingBag, label: 'Catalogue' },
-  { to: '/private-portal/cart', icon: ShoppingCart, label: 'Cart' },
+  { to: shopPaths.catalogue, icon: ShoppingBag, label: 'Shop' },
+  { to: shopPaths.cart, icon: ShoppingCart, label: 'Cart' },
   { to: '/private-portal/orders', icon: ClipboardList, label: 'Orders' },
   { to: '/private-portal/private-reviews', icon: Star, label: 'Reviews' },
   { to: '/private-portal/private-success-stories', icon: Trophy, label: 'Success Stories' },
@@ -120,7 +121,7 @@ export default function PortalLayout() {
                 Install App
               </button>
             )}
-            <Link to="/private-portal/cart" className="relative p-2 rounded-lg hover:bg-gray-100">
+            <Link to={shopPaths.cart} className="relative p-2 rounded-lg hover:bg-gray-100">
               <ShoppingCart className="w-5 h-5 text-text-muted" />
               {itemCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
@@ -140,6 +141,9 @@ export default function PortalLayout() {
 }
 
 export function PortalAuthLayout() {
+  const [searchParams] = useSearchParams()
+  const isAdminView = searchParams.get('mode') === 'admin'
+
   return (
     <div className="min-h-screen flex">
       {/* Brand panel — desktop only */}
@@ -152,8 +156,18 @@ export function PortalAuthLayout() {
           <img src={brand.logo} alt={brand.name} className="h-24 w-24 rounded-2xl mx-auto mb-8 shadow-2xl" />
           <h2 className="font-display text-3xl font-bold mb-4 tracking-tight">{brand.name}</h2>
           <p className="text-white/70 leading-relaxed">{brand.tagline}</p>
-          <div className="mt-10 pt-8 border-t border-white/10 text-sm text-white/50">
-            Private customer portal — invite only
+          <div className="mt-10 pt-8 border-t border-white/10 text-sm text-white/50 space-y-3">
+            <p>
+              {isAdminView
+                ? 'Business admin portal — products, customers & orders'
+                : 'Sign in to shop, track orders & access your account'}
+            </p>
+            <a
+              href="/businesscard"
+              className="inline-flex items-center gap-1.5 text-white/70 hover:text-white transition-colors text-xs"
+            >
+              View digital business card →
+            </a>
           </div>
         </div>
       </div>

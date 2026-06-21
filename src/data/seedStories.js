@@ -34,6 +34,16 @@ export const SEED_SUCCESS_STORIES = [
 
 export const SEED_REVIEWS = [
   {
+    id: 'seed-verified-client-6weeks',
+    author_name: 'Verified client',
+    rating: 5,
+    content: 'I felt uncomfortable and was struggling to lose weight — always feeling down about it. Just six weeks into my journey I\'ve already seen a real difference. I\'m so grateful for the support and getting my confidence back. I feel absolutely amazing and would recommend to anyone struggling. The team are so supportive and always there when I need advice.',
+    content_private: 'Started my journey on 6 May. First weigh-in was 103.8kg — I felt uncomfortable, was struggling to lose weight, and always felt down about it. Just six weeks later I reached 92.5kg, a loss of 1st 10lb. I\'m so grateful for the support and getting my confidence back. I feel absolutely amazing and would recommend to anyone struggling. Shared with permission — name withheld for privacy.',
+    is_public: true,
+    is_approved: true,
+    is_seed: true,
+  },
+  {
     id: 'seed-jennifer',
     author_name: 'Jennifer K.',
     rating: 5,
@@ -64,23 +74,3 @@ export const SEED_REVIEWS = [
     is_seed: true,
   },
 ]
-
-export function mergeSeedStories(stories, { publicOnly = false, privatePortal = false } = {}) {
-  let seeds = SEED_SUCCESS_STORIES
-  if (publicOnly) seeds = seeds.filter(s => s.is_public)
-  if (stories.length > 0) return stories
-  return seeds.map(s => ({
-    ...s,
-    content: privatePortal ? (s.content_private || s.content) : s.content,
-  }))
-}
-
-export function mergeSeedReviews(reviews, { publicOnly = false, privatePortal = false } = {}) {
-  let seeds = SEED_REVIEWS
-  if (publicOnly) seeds = seeds.filter(r => r.is_public)
-  if (reviews.length > 0) return reviews
-  return seeds.map(r => ({
-    ...r,
-    content: privatePortal ? (r.content_private || r.content) : r.content,
-  }))
-}

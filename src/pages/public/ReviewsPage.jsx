@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Star } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
-import { mergeSeedReviews } from '../../data/seedStories'
+import { mergeSeedReviews } from '../../lib/websiteContent'
 import Card from '../../components/ui/Card'
+import { ReviewCardContent } from '../../components/ui/ContentMedia'
 import PageHero from '../../components/ui/PageHero'
 import { SkeletonCard } from '../../components/ui/Skeleton'
 
@@ -30,14 +31,14 @@ export default function ReviewsPage() {
         ) : reviews.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reviews.map(r => (
-              <Card key={r.id} className="p-7 hover-lift">
+              <Card key={r.id} className="p-7 hover-lift overflow-hidden">
                 <div className="flex gap-1 mb-4">
                   {Array.from({ length: r.rating || 5 }).map((_, i) => (
                     <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                   ))}
                 </div>
-                <p className="text-sm text-text-muted mb-5 leading-relaxed">{r.content}</p>
-                <p className="font-semibold text-sm text-text">{r.author_name}</p>
+                <ReviewCardContent review={r} />
+                <p className="font-semibold text-sm text-text">{r.author_name || 'Verified client'}</p>
               </Card>
             ))}
           </div>

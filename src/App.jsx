@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import DevModeBanner from './components/dev/DevModeBanner'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { ProtectedRoute, GuestRoute } from './routes/ProtectedRoute'
@@ -23,6 +24,7 @@ import BlogPostPage from './pages/public/BlogPostPage'
 import AftercarePage from './pages/public/AftercarePage'
 import FAQsPage from './pages/public/FAQsPage'
 import ContactPage from './pages/public/ContactPage'
+import DownloadAppPage from './pages/public/DownloadAppPage'
 import LegalPage from './pages/public/LegalPage'
 
 // Portal & admin — lazy loaded (not linked from public header)
@@ -38,6 +40,7 @@ const OrdersPage = lazy(() => import('./pages/portal/OrdersPage'))
 const OrderDetailPage = lazy(() => import('./pages/portal/OrderDetailPage'))
 const ProfilePage = lazy(() => import('./pages/portal/ProfilePage'))
 const SettingsPage = lazy(() => import('./pages/portal/SettingsPage'))
+const ChangePasswordPage = lazy(() => import('./pages/portal/ChangePasswordPage'))
 const PrivateReviewsPage = lazy(() => import('./pages/portal/PrivateContentPages').then(m => ({ default: m.PrivateReviewsPage })))
 const PrivateSuccessStoriesPage = lazy(() => import('./pages/portal/PrivateContentPages').then(m => ({ default: m.PrivateSuccessStoriesPage })))
 const PrivateAftercarePage = lazy(() => import('./pages/portal/PrivateContentPages').then(m => ({ default: m.PrivateAftercarePage })))
@@ -45,17 +48,28 @@ const PrivateAdvicePage = lazy(() => import('./pages/portal/PrivateContentPages'
 
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'))
 const AdminCustomers = lazy(() => import('./pages/admin/AdminCustomers'))
+const AdminStaff = lazy(() => import('./pages/admin/AdminStaff'))
 const AdminProducts = lazy(() => import('./pages/admin/AdminProducts'))
 const AdminOrders = lazy(() => import('./pages/admin/AdminOrders'))
+const AdminEarnings = lazy(() => import('./pages/admin/AdminEarnings'))
+const AdminWebsite = lazy(() => import('./pages/admin/AdminWebsite'))
 const AdminBlog = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminBlog })))
 const AdminReviews = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminReviews })))
 const AdminSuccessStories = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminSuccessStories })))
 const AdminAftercare = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminAftercare })))
 const AdminSettings = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminSettings })))
 const AdminLegal = lazy(() => import('./pages/admin/AdminContent').then(m => ({ default: m.AdminLegal })))
+const AdminPageContent = lazy(() => import('./pages/admin/AdminSitePages').then(m => ({ default: m.AdminPageContent })))
+const AdminFAQs = lazy(() => import('./pages/admin/AdminSitePages').then(m => ({ default: m.AdminFAQs })))
+const AdminWellnessAdvice = lazy(() => import('./pages/admin/AdminSitePages').then(m => ({ default: m.AdminWellnessAdvice })))
 
 function Lazy({ children }) {
   return <Suspense fallback={<RouteLoader />}>{children}</Suspense>
+}
+
+function LegacyProductRedirect() {
+  const { id } = useParams()
+  return <Navigate to={`/shop/product/${id}`} replace />
 }
 
 const toastOptions = {
@@ -78,6 +92,7 @@ export default function App() {
         <AuthProvider>
           <CartProvider>
             <Toaster position="top-right" toastOptions={toastOptions} />
+            <DevModeBanner />
             <Routes>
               <Route element={<PublicLayout />}>
                 <Route index element={<HomePage />} />
@@ -91,12 +106,24 @@ export default function App() {
                 <Route path="aftercare" element={<AftercarePage />} />
                 <Route path="faqs" element={<FAQsPage />} />
                 <Route path="contact" element={<ContactPage />} />
+                <Route path="get-app" element={<DownloadAppPage />} />
+                <Route path="shop" element={<Lazy><CataloguePage /></Lazy>} />
+                <Route path="shop/product/:id" element={<Lazy><ProductPage /></Lazy>} />
+                <Route path="shop/cart" element={<Lazy><CartPage /></Lazy>} />
                 <Route path="privacy-policy" element={<LegalPage slug="privacy-policy" />} />
                 <Route path="terms-and-conditions" element={<LegalPage slug="terms-and-conditions" />} />
                 <Route path="cookies" element={<LegalPage slug="cookies" />} />
                 <Route path="legal-disclaimer" element={<LegalPage slug="legal-disclaimer" />} />
                 <Route path="compliance" element={<LegalPage slug="compliance" />} />
               </Route>
+
+              <Route path="private-portal/invite/:token" element={<Navigate to="/businesscard" replace />} />
+              <Route path="card" element={<Navigate to="/businesscard" replace />} />
+              <Route path="card/*" element={<Navigate to="/businesscard" replace />} />
+              <Route path="BusinessCard" element={<Navigate to="/businesscard" replace />} />
+              <Route path="BusinessCard/" element={<Navigate to="/businesscard" replace />} />
+              <Route path="BusinessCard/*" element={<Navigate to="/businesscard" replace />} />
+              <Route path="private-portal/change-password" element={<Lazy><ProtectedRoute requireAuth allowPasswordChange><ChangePasswordPage /></ProtectedRoute></Lazy>} />
 
               <Route path="private-portal" element={<PortalAuthLayout />}>
                 <Route path="login" element={<Lazy><GuestRoute><LoginPage /></GuestRoute></Lazy>} />
@@ -107,9 +134,9 @@ export default function App() {
 
               <Route path="private-portal" element={<ProtectedRoute requireApproved><PortalLayout /></ProtectedRoute>}>
                 <Route path="dashboard" element={<Lazy><DashboardPage /></Lazy>} />
-                <Route path="catalogue" element={<Lazy><CataloguePage /></Lazy>} />
-                <Route path="product/:id" element={<Lazy><ProductPage /></Lazy>} />
-                <Route path="cart" element={<Lazy><CartPage /></Lazy>} />
+                <Route path="catalogue" element={<Navigate to="/shop" replace />} />
+                <Route path="product/:id" element={<LegacyProductRedirect />} />
+                <Route path="cart" element={<Navigate to="/shop/cart" replace />} />
                 <Route path="orders" element={<Lazy><OrdersPage /></Lazy>} />
                 <Route path="order/:id" element={<Lazy><OrderDetailPage /></Lazy>} />
                 <Route path="profile" element={<Lazy><ProfilePage /></Lazy>} />
@@ -123,14 +150,25 @@ export default function App() {
               <Route path="private-admin" element={<ProtectedRoute requireAdmin><AdminLayout /></ProtectedRoute>}>
                 <Route index element={<Lazy><AdminDashboard /></Lazy>} />
                 <Route path="customers" element={<Lazy><AdminCustomers /></Lazy>} />
+                <Route path="team" element={<Lazy><AdminStaff /></Lazy>} />
                 <Route path="products" element={<Lazy><AdminProducts /></Lazy>} />
                 <Route path="orders" element={<Lazy><AdminOrders /></Lazy>} />
-                <Route path="blog" element={<Lazy><AdminBlog /></Lazy>} />
-                <Route path="reviews" element={<Lazy><AdminReviews /></Lazy>} />
-                <Route path="success-stories" element={<Lazy><AdminSuccessStories /></Lazy>} />
-                <Route path="aftercare" element={<Lazy><AdminAftercare /></Lazy>} />
+                <Route path="earnings" element={<Lazy><AdminEarnings /></Lazy>} />
+                <Route path="website" element={<Lazy><AdminWebsite /></Lazy>} />
+                <Route path="website/blog" element={<Lazy><AdminBlog /></Lazy>} />
+                <Route path="website/reviews" element={<Lazy><AdminReviews /></Lazy>} />
+                <Route path="website/success-stories" element={<Lazy><AdminSuccessStories /></Lazy>} />
+                <Route path="website/aftercare" element={<Lazy><AdminAftercare /></Lazy>} />
+                <Route path="website/pages" element={<Lazy><AdminPageContent /></Lazy>} />
+                <Route path="website/faqs" element={<Lazy><AdminFAQs /></Lazy>} />
+                <Route path="website/wellness-advice" element={<Lazy><AdminWellnessAdvice /></Lazy>} />
+                <Route path="website/legal" element={<Lazy><AdminLegal /></Lazy>} />
+                <Route path="blog" element={<Navigate to="/private-admin/website/blog" replace />} />
+                <Route path="reviews" element={<Navigate to="/private-admin/website/reviews" replace />} />
+                <Route path="success-stories" element={<Navigate to="/private-admin/website/success-stories" replace />} />
+                <Route path="aftercare" element={<Navigate to="/private-admin/website/aftercare" replace />} />
+                <Route path="legal" element={<Navigate to="/private-admin/website/legal" replace />} />
                 <Route path="settings" element={<Lazy><AdminSettings /></Lazy>} />
-                <Route path="legal" element={<Lazy><AdminLegal /></Lazy>} />
               </Route>
 
               <Route path="*" element={<Navigate to="/" replace />} />

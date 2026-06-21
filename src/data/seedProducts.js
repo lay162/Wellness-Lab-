@@ -153,15 +153,10 @@ export const SEED_PRODUCTS = [
   }),
 ]
 
-export function mergeSeedProducts(products) {
-  if (products.length > 0) return products
-  return SEED_PRODUCTS
-}
-
 export function getSeedProduct(id) {
   return SEED_PRODUCTS.find(p => p.id === id) ?? null
 }
 
 export function isSeedProduct(id) {
-  return SEED_PRODUCTS.some(p => p.id === id)
+  return typeof id === 'string' && id.startsWith('seed-')
 }

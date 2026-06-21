@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
 import Card, { CardBody } from '../../components/ui/Card'
-import { SkeletonCard } from '../../components/ui/Skeleton'
+import { SkeletonCard, PageLoader } from '../../components/ui/Skeleton'
+import { usePageContent } from '../../lib/siteContent'
 
 export default function AftercarePage() {
+  const { meta, loading: metaLoading } = usePageContent('aftercare')
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(isSupabaseConfigured)
 
@@ -14,12 +16,14 @@ export default function AftercarePage() {
       .then(({ data }) => { setPosts(data || []); setLoading(false) })
   }, [])
 
+  if (metaLoading) return <PageLoader />
+
   return (
     <div>
       <section className="gradient-hero text-white py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-4xl font-bold mb-4">Aftercare Guidance</h1>
-          <p className="text-white/80 max-w-2xl mx-auto">General aftercare information and educational guidance.</p>
+          <h1 className="text-4xl font-bold mb-4">{meta.hero_title}</h1>
+          <p className="text-white/80 max-w-2xl mx-auto">{meta.hero_subtitle}</p>
         </div>
       </section>
 
@@ -45,10 +49,7 @@ export default function AftercarePage() {
         )}
 
         <div className="mt-12 p-6 bg-accent/50 rounded-2xl border border-primary/10">
-          <p className="text-sm text-text-muted">
-            <strong className="text-text">Note:</strong> This content is for general educational purposes.
-            For personalised aftercare guidance, please contact our team directly.
-          </p>
+          <p className="text-sm text-text-muted" dangerouslySetInnerHTML={{ __html: meta.note_html || '' }} />
         </div>
       </section>
     </div>

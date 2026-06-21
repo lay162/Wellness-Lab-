@@ -7,8 +7,11 @@ import Card from '../../components/ui/Card'
 import PageHero from '../../components/ui/PageHero'
 import SocialLinks, { WhatsAppIcon } from '../../components/ui/SocialLinks'
 import toast from 'react-hot-toast'
+import { usePageContent } from '../../lib/siteContent'
+import { PageLoader } from '../../components/ui/Skeleton'
 
 export default function ContactPage() {
+  const { meta, loading: pageLoading } = usePageContent('contact')
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [loading, setLoading] = useState(false)
 
@@ -28,11 +31,13 @@ export default function ContactPage() {
     { icon: Clock, label: 'Hours', value: brand.contact.hours },
   ]
 
+  if (pageLoading) return <PageLoader />
+
   return (
     <div>
       <PageHero
-        title="Contact Us"
-        subtitle="Get in touch via WhatsApp or send us a message. We respond promptly."
+        title={meta.hero_title}
+        subtitle={meta.hero_subtitle}
       />
 
       <section className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

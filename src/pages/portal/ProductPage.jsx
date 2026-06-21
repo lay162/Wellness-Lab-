@@ -1,35 +1,36 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { ShoppingCart, FileText } from 'lucide-react'
+import { Link, useParams, useNavigate } from 'react-router-dom'
+import { ShoppingCart, FileText, ArrowLeft } from 'lucide-react'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
 import { useCart } from '../../context/CartContext'
-import { getSeedProduct, isSeedProduct } from '../../data/seedProducts'
+import { getSeedProduct, isSeedProduct, resolveProduct } from '../../lib/products'
 import Button from '../../components/ui/Button'
 import Card, { CardBody } from '../../components/ui/Card'
-import Badge from '../../components/ui/Badge'
 import { formatProductPrice } from '../../lib/utils'
 import { PageLoader } from '../../components/ui/Skeleton'
 import toast from 'react-hot-toast'
+import { shopPaths } from '../../lib/shopPaths'
+import SeoHead from '../../components/seo/SeoHead'
+import { productSchema, SITE_URL } from '../../config/seo'
 
-export default function ProductPage() {
+export default function ProductPage({ portal = false }) {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { addItem } = useCart()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (isSeedProduct(id)) {
-      setProduct(getSeedProduct(id))
-      setLoading(false)
-      return
-    }
     if (!isSupabaseConfigured) {
+      if (isSeedProduct(id)) setProduct(getSeedProduct(id))
       setLoading(false)
       return
     }
-    supabase.from('products').select('*').eq('id', id).single()
-      .then(({ data }) => { setProduct(data); setLoading(false) })
+    resolveProduct(supabase, id).then(data => {
+      setProduct(data)
+      setLoading(false)
+    })
   }, [id])
 
   if (loading) return <PageLoader />
@@ -39,10 +40,28 @@ export default function ProductPage() {
     if (product.stock <= 0) { toast.error('Out of stock'); return }
     addItem(product, quantity)
     toast.success(`Added ${quantity}x ${product.name} to cart`)
+    if (!portal) navigate(shopPaths.cart)
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
+    <>
+      {!portal && (
+        <SeoHead
+          title={`${product.name} | ${product.category || 'Peptides'} UK | Wellness Lab`}
+          description={product.description || `Order ${product.name} from Wellness Lab — UK peptide research shop with nationwide support.`}
+          path={`/shop/product/${product.id}`}
+          image={product.image_url ? (product.image_url.startsWith('http') ? product.image_url : `${SITE_URL}${product.image_url}`) : undefined}
+          type="product"
+          jsonLd={productSchema(product)}
+        />
+      )}
+    <div className={portal ? 'max-w-4xl mx-auto' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'}>
+      {!portal && (
+        <Link to={shopPaths.catalogue} className="inline-flex items-center gap-2 text-sm text-primary font-medium hover:underline mb-8">
+          <ArrowLeft className="w-4 h-4" /> Back to shop
+        </Link>
+      )}
+      <div className="max-w-4xl mx-auto">
       <div className="grid md:grid-cols-2 gap-8">
         <div className="bg-white rounded-2xl border border-gray-100 p-8 flex items-center justify-center aspect-square">
           {product.image_url ? (
@@ -58,8 +77,9 @@ export default function ProductPage() {
         </div>
         <div>
           <div className="flex items-center gap-2 flex-wrap mb-2">
-            {product.category && <span className="text-xs font-medium text-primary uppercase">{product.category}</span>}
-            {product.is_seed && <Badge status="pending">Catalogue item</Badge>}
+            {product.category && (
+              <span className="text-xs font-medium text-primary uppercase">{product.category}</span>
+            )}
           </div>
           <h1 className="text-3xl font-bold text-text mb-4">{product.name}</h1>
           <p className="text-3xl font-bold text-primary mb-6">{formatProductPrice(product)}</p>
@@ -112,6 +132,8 @@ export default function ProductPage() {
           )}
         </div>
       </div>
+      </div>
     </div>
+    </>
   )
 }

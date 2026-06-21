@@ -1,8 +1,13 @@
 export const brand = {
   name: 'Wellness Lab',
+  siteUrl: 'https://thewellnesslab.uk',
   tagline: 'Exploring wellness through peptide research 🧪🧬🇬🇧',
-  description:
-    'Science-based info & studies. For educational & research purposes only.',
+  description: 'Science-based info & studies.',
+  descriptionNote: 'For educational & research purposes only.',
+  /** Combined line for meta tags / SEO */
+  get fullDescription() {
+    return `${this.description} ${this.descriptionNote}`
+  },
   disclaimer:
     'All content is for general educational and research purposes only. It does not constitute medical advice.',
 
@@ -10,6 +15,7 @@ export const brand = {
   favicon: '/favicon.png',
   appIcon192: '/app-icon-192.png',
   appIcon512: '/app-icon-512.png',
+  appleTouchIcon: '/apple-touch-icon.png',
 
   colors: {
     primary: '#1E6B5C',
