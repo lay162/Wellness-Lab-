@@ -54,6 +54,8 @@ function businessCardStaticPlugin() {
 }
 
 export default defineConfig({
+  // GitHub Pages project URL needs /Wellness-Lab-/; custom domain uses /
+  base: process.env.VITE_BASE || '/',
   plugins: [
     businessCardStaticPlugin(),
     react(),
