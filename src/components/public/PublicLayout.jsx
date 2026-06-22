@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Menu, X, ArrowRight, ShoppingCart, ChevronDown } from 'lucide-react'
 import brand from '../../config/brand'
 import Button from '../ui/Button'
+import BrandName from '../ui/BrandName'
 import ScrollToTop from '../ui/ScrollToTop'
 import SocialLinks, { WhatsAppFloat, DownloadAppFloat } from '../ui/SocialLinks'
 import { useCart } from '../../context/CartContext'
@@ -110,7 +111,7 @@ export default function PublicLayout() {
             {/* Logo */}
             <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group shrink-0">
               <img src={brand.logo} alt={brand.name} className="h-9 w-9 sm:h-10 sm:w-10 rounded-full object-cover shadow-sm ring-1 ring-gray-100 group-hover:scale-105 transition-transform shrink-0" />
-              <span className="font-semibold text-base sm:text-lg text-primary-dark tracking-tight whitespace-nowrap">{brand.name}</span>
+              <BrandName className="text-base sm:text-lg whitespace-nowrap" />
             </Link>
 
             {/* Desktop nav — centred, cannot bleed into actions */}
@@ -238,7 +239,7 @@ export default function PublicLayout() {
             <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-5">
                 <img src={brand.logo} alt={brand.name} className="h-11 w-11 rounded-full object-cover ring-1 ring-white/20" />
-                <span className="font-semibold text-xl tracking-tight">{brand.name}</span>
+                <BrandName variant="light" className="text-xl" />
               </div>
               <p className="text-white/65 text-sm max-w-md leading-relaxed">
                 {brand.description}

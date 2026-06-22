@@ -53,15 +53,10 @@ export default function HomePage() {
         </div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-20 lg:py-28">
           <div className="flex flex-col animate-fade-in-up">
-            {/* Logo first — above badge on all screen sizes */}
-            <div className="flex justify-center mb-6 sm:mb-8">
-              <div className="relative">
-                <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center p-6 sm:p-7 lg:p-8 shadow-2xl">
-                  <img src={brand.logo} alt={brand.name} className="w-full h-full rounded-full object-cover shadow-lg" />
-                </div>
-                <div className="absolute -bottom-3 left-1/2 -translate-x-1/2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-full glass-dark text-white text-xs sm:text-sm font-medium shadow-xl whitespace-nowrap">
-                  Trusted wellness partner
-                </div>
+            {/* Logo */}
+            <div className="flex flex-col items-center mb-10 sm:mb-12">
+              <div className="w-32 h-32 sm:w-40 sm:h-40 lg:w-56 lg:h-56 xl:w-64 xl:h-64 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 flex items-center justify-center p-6 sm:p-7 lg:p-8 shadow-2xl">
+                <img src={brand.logo} alt={brand.name} className="w-full h-full rounded-full object-cover shadow-lg" />
               </div>
             </div>
 
