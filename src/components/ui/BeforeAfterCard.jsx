@@ -1,4 +1,5 @@
 import { cn } from '../../lib/utils'
+import { resolveImageUrl } from '../../lib/assetUrl'
 
 export default function BeforeAfterCard({ before, after, author, className }) {
   if (!before && !after) return null
@@ -31,7 +32,7 @@ export function StoryCard({ story, showBeforeAfter = true }) {
       {showBeforeAfter && (story.before_image || story.after_image) ? (
         <BeforeAfterCard before={story.before_image} after={story.after_image} author={story.author_name} />
       ) : story.image_url ? (
-        <img src={story.image_url} alt="" className="w-full h-52 object-cover rounded-xl" />
+        <img src={resolveImageUrl(story.image_url)} alt="" className="w-full h-52 object-cover rounded-xl" />
       ) : null}
       <div>
         <h3 className="font-semibold text-text">{story.title}</h3>

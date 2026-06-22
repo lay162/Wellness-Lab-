@@ -1,3 +1,5 @@
+import { resolveImageUrl } from './assetUrl.js'
+
 /** Stock images per category — used when a post has no uploaded image_url */
 const unsplash = (id) =>
   `https://images.unsplash.com/${id}?auto=format&fit=crop&w=800&q=80`
@@ -56,8 +58,9 @@ export const BLOG_CATEGORY_IMAGES = {
     unsplash('photo-1589829545855-d10d557cf95f'),
   ],
   'Getting Started': [
-    unsplash('photo-1476480862126-209bfaa8edc4'),
     unsplash('photo-1506126613408-eca07ce68773'),
+    unsplash('photo-1544367567-0f2fcb009e0b'),
+    unsplash('photo-1571019613454-1cb2f99b2d8b'),
   ],
   Shop: [
     unsplash('photo-1607083206869-9c2748b4e23e'),
@@ -74,10 +77,18 @@ function slugIndex(slug) {
   return [...slug].reduce((sum, c) => sum + c.charCodeAt(0), 0)
 }
 
-/** Resolve the best image for a blog post (uploaded URL or category stock photo). */
-export function getBlogImageUrl(post, index) {
-  if (post?.image_url) return post.image_url
+/** Category stock photo only (ignores uploaded image_url). */
+export function getBlogCategoryImage(post) {
   const pool = BLOG_CATEGORY_IMAGES[post?.category] || BLOG_CATEGORY_IMAGES.default
-  const idx = index ?? slugIndex(post?.slug)
+  const idx = slugIndex(post?.slug)
   return pool[idx % pool.length]
+}
+
+/** Resolve the best image for a blog post (uploaded URL or category stock photo). */
+export function getBlogImageUrl(post) {
+  if (post?.image_url) {
+    if (/^https?:\/\//i.test(post.image_url)) return post.image_url
+    return resolveImageUrl(post.image_url)
+  }
+  return getBlogCategoryImage(post)
 }

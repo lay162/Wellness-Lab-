@@ -11,13 +11,16 @@ function hideAppSplash() {
   window.setTimeout(() => el.remove(), 400)
 }
 
+const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '')
 const path = window.location.pathname
+const cardBase = `${base}/businesscard`
 if (
   path === '/BusinessCard' || path === '/BusinessCard/' || path === '/BusinessCard/index.html' ||
-  path === '/card' || path === '/card/' || path === '/businesscard/index.html' ||
-  path === '/businesscard'
+  path === '/card' || path === '/card/' ||
+  path === cardBase || path === `${cardBase}/` || path === `${cardBase}/index.html` ||
+  path === '/businesscard' || path === '/businesscard/' || path === '/businesscard/index.html'
 ) {
-  window.location.replace('/businesscard/')
+  window.location.replace(`${cardBase}/`)
 }
 
 createRoot(document.getElementById('root')).render(

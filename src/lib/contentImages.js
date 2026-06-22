@@ -1,13 +1,14 @@
 /** Keep image fields aligned between admin and the public website */
+import { resolveImageUrl } from './assetUrl'
 
 export function getReviewImage(review) {
-  return review?.image_url || null
+  return resolveImageUrl(review?.image_url)
 }
 
 export function getStoryBeforeAfter(story) {
   return {
-    before: story?.before_image || null,
-    after: story?.after_image || story?.image_url || null,
+    before: resolveImageUrl(story?.before_image),
+    after: resolveImageUrl(story?.after_image || story?.image_url),
   }
 }
 

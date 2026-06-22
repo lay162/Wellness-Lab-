@@ -163,7 +163,7 @@ export function PortalAuthLayout() {
                 : 'Sign in to shop, track orders & access your account'}
             </p>
             <a
-              href="/businesscard"
+              href={`${import.meta.env.BASE_URL}businesscard`}
               className="inline-flex items-center gap-1.5 text-white/70 hover:text-white transition-colors text-xs"
             >
               View digital business card →

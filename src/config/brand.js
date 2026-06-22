@@ -1,3 +1,5 @@
+import { assetUrl } from '../lib/assetUrl'
+
 export const brand = {
   name: 'Wellness Lab',
   siteUrl: 'https://thewellnesslab.uk',
@@ -11,11 +13,11 @@ export const brand = {
   disclaimer:
     'All content is for general educational and research purposes only. It does not constitute medical advice.',
 
-  logo: '/logo.png',
-  favicon: '/favicon.png',
-  appIcon192: '/app-icon-192.png',
-  appIcon512: '/app-icon-512.png',
-  appleTouchIcon: '/apple-touch-icon.png',
+  logo: assetUrl('logo.png'),
+  favicon: assetUrl('favicon.png'),
+  appIcon192: assetUrl('app-icon-192.png'),
+  appIcon512: assetUrl('app-icon-512.png'),
+  appleTouchIcon: assetUrl('apple-touch-icon.png'),
 
   colors: {
     primary: '#1E6B5C',

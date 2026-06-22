@@ -272,7 +272,7 @@ export default function PublicLayout() {
                 <li><Link to={shopPaths.catalogue} className="hover:text-white transition-colors">Browse shop</Link></li>
                 <li><Link to={shopPaths.cart} className="hover:text-white transition-colors">Your cart</Link></li>
                 <li><Link to="/get-app" className="hover:text-white transition-colors">Get the App</Link></li>
-                <li><a href="/businesscard" className="hover:text-white transition-colors">Digital business card</a></li>
+                <li><a href={`${import.meta.env.BASE_URL}businesscard`} className="hover:text-white transition-colors">Digital business card</a></li>
                 <li><Link to={shopPaths.register} className="hover:text-white transition-colors">Create account</Link></li>
                 <li><Link to={shopPaths.login} className="hover:text-white transition-colors">Sign in</Link></li>
               </ul>

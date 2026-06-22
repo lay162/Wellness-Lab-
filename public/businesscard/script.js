@@ -1,4 +1,7 @@
-const CARD_PATH = '/businesscard'
+const CARD_PATH = (() => {
+  const m = window.location.pathname.match(/^(.*\/businesscard)\/?/)
+  return m ? m[1] : '/businesscard'
+})()
 const AUTOPLAY_MS = 4500
 
 function getCardUrl() {
@@ -87,7 +90,7 @@ function generateQr() {
   logoWrap.setAttribute('aria-hidden', 'true')
   const logo = document.createElement('img')
   logo.className = 'qrLogo'
-  logo.src = '/logo.png'
+  logo.src = '../logo.png'
   logo.alt = ''
   logo.width = 48
   logo.height = 48

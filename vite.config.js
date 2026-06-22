@@ -78,24 +78,24 @@ export default defineConfig({
         background_color: '#F8FAF9',
         display: 'standalone',
         orientation: 'portrait-primary',
-        scope: '/',
-        start_url: '/',
+        scope: './',
+        start_url: './',
         categories: ['health', 'lifestyle', 'shopping'],
         icons: [
           {
-            src: '/app-icon-192.png',
+            src: 'app-icon-192.png',
             sizes: '192x192',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/app-icon-512.png',
+            src: 'app-icon-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any',
           },
           {
-            src: '/app-icon-maskable-512.png',
+            src: 'app-icon-maskable-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
@@ -104,7 +104,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
-        navigateFallback: '/offline.html',
+        navigateFallback: 'offline.html',
         navigateFallbackDenylist: [/^\/private-admin/, /^\/businesscard/, /^\/BusinessCard/, /^\/card/],
         runtimeCaching: [
           {
