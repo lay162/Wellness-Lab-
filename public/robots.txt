@@ -2,5 +2,6 @@ User-agent: *
 Allow: /
 Disallow: /private-portal/
 Disallow: /private-admin/
+Disallow: /businesscard
 
 Sitemap: https://thewellnesslab.uk/sitemap.xml

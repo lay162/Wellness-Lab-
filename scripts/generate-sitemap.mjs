@@ -20,7 +20,6 @@ const staticPages = [
   { loc: '/faqs', priority: '0.7', changefreq: 'monthly' },
   { loc: '/contact', priority: '0.8', changefreq: 'monthly' },
   { loc: '/get-app', priority: '0.6', changefreq: 'monthly' },
-  { loc: '/businesscard', priority: '0.8', changefreq: 'monthly' },
   { loc: '/privacy-policy', priority: '0.3', changefreq: 'yearly' },
   { loc: '/terms-and-conditions', priority: '0.3', changefreq: 'yearly' },
   { loc: '/cookies', priority: '0.3', changefreq: 'yearly' },

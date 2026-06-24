@@ -206,18 +206,12 @@ export function PortalAuthLayout() {
           <img src={brand.logo} alt={brand.name} className="h-24 w-24 rounded-2xl mx-auto mb-8 shadow-2xl" />
           <h2 className="font-display text-3xl font-bold mb-4 tracking-tight">{brand.name}</h2>
           <p className="text-white/70 leading-relaxed">{brand.tagline}</p>
-          <div className="mt-10 pt-8 border-t border-white/10 text-sm text-white/50 space-y-3">
+          <div className="mt-10 pt-8 border-t border-white/10 text-sm text-white/50">
             <p>
               {isAdminView
                 ? 'Business admin portal — products, customers & orders'
                 : 'Sign in to shop, track orders & access your account'}
             </p>
-            <a
-              href={`${import.meta.env.BASE_URL}businesscard`}
-              className="inline-flex items-center gap-1.5 text-white/70 hover:text-white transition-colors text-xs"
-            >
-              View digital business card →
-            </a>
           </div>
         </div>
       </div>
