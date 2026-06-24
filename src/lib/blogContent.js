@@ -1,5 +1,13 @@
-import { SEED_BLOG_POSTS, getSeedBlogPost, isSeedBlogSlug } from '../data/seedBlogPosts'
+import { SEED_BLOG_POSTS, getSeedBlogPost, isSeedBlogSlug } from '../data/seedBlogPosts.js'
 import { slugify } from './utils'
+import { attachBlogCoverImage, getBlogImageUrl as resolveCoverUrl } from './blogImages.js'
+
+/** Drop stale external URLs from DB — cover images always resolve from local assets. */
+function normalizeBlogPost(post) {
+  if (!post) return post
+  const { image_url: _removed, ...rest } = post
+  return attachBlogCoverImage(rest)
+}
 
 export { getSeedBlogPost, isSeedBlogSlug }
 
@@ -7,7 +15,7 @@ export function mergeSeedBlogPosts(dbPosts, { publicOnly = false } = {}) {
   const db = dbPosts || []
   const importedSlugs = new Set(db.map(p => p.slug).filter(Boolean))
 
-  let fromDb = db.map(p => ({ ...p, is_seed: false }))
+  let fromDb = db.map(p => normalizeBlogPost({ ...p, is_seed: false }))
   if (publicOnly) fromDb = fromDb.filter(p => p.is_published)
 
   const fromSeeds = SEED_BLOG_POSTS
@@ -25,9 +33,10 @@ export async function importSeedBlogPosts(supabase) {
 
   const toInsert = SEED_BLOG_POSTS
     .filter(p => !existingSlugs.has(p.slug))
-    .map(({ id, is_seed, ...rest }) => ({
+    .map(({ id, is_seed, cover_image, ...rest }) => ({
       ...rest,
       slug: rest.slug || slugify(rest.title),
+      seed_key: id,
       is_published: true,
     }))
 
@@ -44,7 +53,7 @@ export async function importSeedBlogPosts(supabase) {
 
 export async function resolveBlogPost(supabase, slug) {
   const seed = getSeedBlogPost(slug)
-  if (!supabase) return seed
+  if (!supabase) return seed ? attachBlogCoverImage(seed) : null
 
   const { data } = await supabase
     .from('blog_posts')
@@ -52,6 +61,15 @@ export async function resolveBlogPost(supabase, slug) {
     .eq('slug', slug)
     .maybeSingle()
 
-  if (data) return data.is_published ? data : null
-  return seed
+  if (data) return data.is_published ? normalizeBlogPost(data) : null
+  return seed ? attachBlogCoverImage(seed) : null
+}
+
+/** Public helper for pages that load a single post outside mergeSeedBlogPosts. */
+export function enrichBlogPost(post) {
+  return normalizeBlogPost(post)
+}
+
+export function getBlogImageUrl(post) {
+  return resolveCoverUrl(post)
 }

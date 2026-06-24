@@ -195,7 +195,7 @@ export default function HomePage() {
           ) : posts.length > 0 ? (
             <div className="grid md:grid-cols-3 gap-6">
               {posts.map(p => (
-                <Link key={p.id} to={`/blog/${p.slug}`} className="group">
+                <Link key={p.id} to={`/blog/${p.slug}`} className="group block">
                   <Card hover className="overflow-hidden h-full">
                     <BlogCardImage post={p} />
                     <CardBody>

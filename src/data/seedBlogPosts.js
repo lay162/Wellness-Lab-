@@ -1,5 +1,3 @@
-import { getBlogImageUrl } from '../lib/blogImages.js'
-
 function slugify(text) {
   return text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '')
 }
@@ -238,17 +236,18 @@ const TOPICS = [
 
 export const SEED_BLOG_POSTS = TOPICS.map((t, i) => {
   const slug = slugify(t.title)
+  const index = i + 1
   return {
-    id: `seed-blog-${i + 1}`,
+    id: `seed-blog-${index}`,
     slug,
     title: t.title,
     excerpt: t.excerpt,
     content: article(t.excerpt, t.sections),
     category: t.category,
+    cover_image: `content/blog/blog-${String(index).padStart(2, '0')}.jpg`,
     is_published: true,
     featured: i < 4,
     is_seed: true,
-    image_url: getBlogImageUrl({ category: t.category, slug }, i),
     created_at: weeksAgo(26 - i),
     updated_at: weeksAgo(26 - i),
   }

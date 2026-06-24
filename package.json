@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/ensure-content-images.mjs",
     "dev": "vite",
     "prebuild": "node scripts/generate-pwa-assets.mjs && node scripts/ensure-content-images.mjs && node scripts/generate-sitemap.mjs",
     "build": "vite build",

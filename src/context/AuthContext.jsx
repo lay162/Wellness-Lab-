@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { supabase, isSupabaseConfigured } from '../lib/supabase'
 import {
   isDevBypass, getStoredDevRole, storeDevRole, clearDevRole,
-  DEV_PROFILES, devUserFromProfile,
+  mergeDevProfile, saveDevProfileOverrides, devUserFromProfile,
 } from '../lib/devAuth'
 
 const AuthContext = createContext(null)
@@ -17,7 +17,7 @@ export function AuthProvider({ children }) {
   const [isDevSession, setIsDevSession] = useState(false)
 
   const applyDevRole = useCallback((role) => {
-    const p = DEV_PROFILES[role]
+    const p = mergeDevProfile(role)
     storeDevRole(role)
     setProfile(p)
     setUser(devUserFromProfile(p))
@@ -115,8 +115,22 @@ export function AuthProvider({ children }) {
   }
 
   const refreshProfile = async () => {
+    if (isDevSession) {
+      const role = getStoredDevRole()
+      if (role) setProfile(mergeDevProfile(role))
+      return null
+    }
     if (user) return fetchProfile(user.id)
     return null
+  }
+
+  const updateDevProfile = (updates) => {
+    if (!isDevSession) return
+    const role = getStoredDevRole()
+    if (!role) return
+    const merged = { ...profile, ...updates }
+    saveDevProfileOverrides(role, merged)
+    setProfile(merged)
   }
 
   const isAdmin = profile?.role === 'admin' && profile?.status === 'approved'
@@ -142,7 +156,7 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider value={{
-      user, profile, loading, signUp, signIn, signOut, refreshProfile, updatePassword, enterDevAs,
+      user, profile, loading, signUp, signIn, signOut, refreshProfile, updateDevProfile, updatePassword, enterDevAs,
       isAdmin, isApproved, isPending, isRejected, isSuspended, mustChangePassword, isDevSession,
     }}>
       {children}

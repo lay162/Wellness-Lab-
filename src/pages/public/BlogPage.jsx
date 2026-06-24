@@ -104,9 +104,9 @@ export default function BlogPage() {
             <h2 className="text-xl font-bold text-text mb-6">Featured</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {featured.slice(0, 2).map(p => (
-                <Link key={p.id} to={`/blog/${p.slug}`} className="group">
+                <Link key={p.id} to={`/blog/${p.slug}`} className="group block">
                   <Card hover className="overflow-hidden h-full">
-                    <BlogCardImage post={p} heightClass="h-56" />
+                    <BlogCardImage post={p} heightClass="h-56" priority />
                     <CardBody>
                       <h3 className="font-semibold text-lg text-text group-hover:text-primary transition-colors">{p.title}</h3>
                       <p className="text-sm text-text-muted mt-2 line-clamp-2">{p.excerpt}</p>
@@ -123,7 +123,7 @@ export default function BlogPage() {
         ) : filtered.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filtered.map(p => (
-              <Link key={p.id} to={`/blog/${p.slug}`} className="group">
+              <Link key={p.id} to={`/blog/${p.slug}`} className="group block">
                 <Card hover className="overflow-hidden h-full">
                   <BlogCardImage post={p} heightClass="h-48" />
                   <CardBody>

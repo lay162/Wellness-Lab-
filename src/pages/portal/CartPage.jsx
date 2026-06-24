@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Trash2, ShoppingBag } from 'lucide-react'
+import { Trash2, ShoppingBag, MapPin } from 'lucide-react'
 import { useCart } from '../../context/CartContext'
 import { useAuth } from '../../context/AuthContext'
 import { supabase } from '../../lib/supabase'
@@ -8,13 +8,14 @@ import Card from '../../components/ui/Card'
 import PageHero from '../../components/ui/PageHero'
 import { formatCurrency, formatProductPrice, productHasPrice } from '../../lib/utils'
 import { shopPaths } from '../../lib/shopPaths'
+import { deliveryAddressFromProfile, isAddressComplete, resolveDeliveryAddress, profileToAddressForm } from '../../lib/profileAddresses'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { Textarea } from '../../components/ui/Input'
 
 export default function CartPage({ portal = false }) {
   const { items, removeItem, updateQuantity, clearCart, total } = useCart()
-  const { user, isRejected, isSuspended } = useAuth()
+  const { user, isRejected, isSuspended, profile } = useAuth()
   const navigate = useNavigate()
   const [notes, setNotes] = useState('')
   const [loading, setLoading] = useState(false)
@@ -33,12 +34,20 @@ export default function CartPage({ portal = false }) {
       return
     }
 
+    const deliveryAddr = profile ? resolveDeliveryAddress(profileToAddressForm(profile)) : null
+    if (!isAddressComplete(deliveryAddr)) {
+      toast.error('Please add a delivery address in your profile before checkout.')
+      navigate(shopPaths.profile)
+      return
+    }
+
     setLoading(true)
 
     const { data: order, error: orderError } = await supabase.from('orders').insert({
       user_id: user.id,
       total_amount: total,
       customer_notes: notes,
+      delivery_address: deliveryAddressFromProfile(profile),
       status: 'requested',
       payment_status: 'pending',
     }).select().single()
@@ -126,6 +135,25 @@ export default function CartPage({ portal = false }) {
             <Link to={shopPaths.register} className="text-primary font-medium hover:underline">create an account</Link>
             {' '}to submit your order. Payment details will be arranged once your payment processor is connected.
           </p>
+        )}
+        {user && profile && (
+          <div className="mb-4 p-4 rounded-xl border border-gray-100 bg-accent/30">
+            <div className="flex items-start gap-3">
+              <MapPin className="w-5 h-5 text-primary shrink-0 mt-0.5" />
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-text">Delivery address</p>
+                {isAddressComplete(resolveDeliveryAddress(profileToAddressForm(profile))) ? (
+                  <p className="text-sm text-text-muted mt-1 whitespace-pre-line">{deliveryAddressFromProfile(profile)}</p>
+                ) : (
+                  <p className="text-sm text-amber-700 mt-1">
+                    No delivery address saved.{' '}
+                    <Link to={shopPaths.profile} className="text-primary font-medium hover:underline">Add one in your profile</Link>
+                    {' '}before checkout.
+                  </p>
+                )}
+              </div>
+            </div>
+          </div>
         )}
         <Textarea label="Order notes (optional)" rows={3} value={notes} onChange={e => setNotes(e.target.value)} />
         <div className="flex items-center justify-between mt-6 pt-6 border-t border-gray-100">

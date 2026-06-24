@@ -6,6 +6,7 @@ export const shopPaths = {
   cart: '/shop/cart',
   order: (id) => `/private-portal/order/${id}`,
   orders: '/private-portal/orders',
+  profile: '/private-portal/profile',
   login: '/private-portal/login',
   register: '/private-portal/register',
 }

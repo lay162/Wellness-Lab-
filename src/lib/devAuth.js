@@ -4,6 +4,7 @@ export function isDevBypass() {
 }
 
 const DEV_STORAGE_KEY = 'wl_dev_role'
+const DEV_PROFILE_KEY = 'wl_dev_profile'
 
 export const DEV_PROFILES = {
   admin: {
@@ -15,6 +16,13 @@ export const DEV_PROFILES = {
     role: 'admin',
     status: 'approved',
     must_change_password: false,
+    billing_same_as_home: true,
+    delivery_same_as_billing: true,
+    home_country: 'United Kingdom',
+    billing_country: 'United Kingdom',
+    delivery_country: 'United Kingdom',
+    payment_provider: null,
+    payment_customer_id: null,
     created_at: new Date().toISOString(),
   },
   customer: {
@@ -26,8 +34,33 @@ export const DEV_PROFILES = {
     role: 'customer',
     status: 'approved',
     must_change_password: false,
+    billing_same_as_home: true,
+    delivery_same_as_billing: true,
+    home_country: 'United Kingdom',
+    billing_country: 'United Kingdom',
+    delivery_country: 'United Kingdom',
+    payment_provider: null,
+    payment_customer_id: null,
     created_at: new Date().toISOString(),
   },
+}
+
+export function getDevProfileOverrides(role) {
+  if (!isDevBypass() || !role) return {}
+  try {
+    const raw = sessionStorage.getItem(`${DEV_PROFILE_KEY}_${role}`)
+    return raw ? JSON.parse(raw) : {}
+  } catch {
+    return {}
+  }
+}
+
+export function saveDevProfileOverrides(role, data) {
+  sessionStorage.setItem(`${DEV_PROFILE_KEY}_${role}`, JSON.stringify(data))
+}
+
+export function mergeDevProfile(role) {
+  return { ...DEV_PROFILES[role], ...getDevProfileOverrides(role) }
 }
 
 export function getStoredDevRole() {

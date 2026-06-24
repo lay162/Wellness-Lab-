@@ -9,6 +9,7 @@ import SocialLinks, { WhatsAppFloat, DownloadAppFloat } from '../ui/SocialLinks'
 import { useCart } from '../../context/CartContext'
 import { shopPaths } from '../../lib/shopPaths'
 import SeoHead, { GlobalStructuredData } from '../seo/SeoHead'
+import AccountMenu from '../ui/AccountMenu'
 
 const primaryNavLinks = [
   { to: '/', label: 'Home' },
@@ -160,6 +161,7 @@ export default function PublicLayout() {
             {/* Actions — fixed width, separated from nav */}
             <div className="flex items-center shrink-0 gap-2 sm:gap-3 ml-auto lg:ml-0 lg:pl-4 lg:border-l lg:border-gray-200/80">
               <HeaderCartButton className="hidden sm:inline-flex" />
+              <AccountMenu className="hidden sm:block" />
               <Link to="/contact" className="hidden sm:block">
                 <Button size="sm" className="whitespace-nowrap">
                   <span className="hidden md:inline">Get in Touch</span>

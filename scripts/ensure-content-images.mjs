@@ -8,14 +8,18 @@ import { existsSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { spawnSync } from 'child_process'
+import { BLOG_REMOTE_BY_SEED_ID } from '../src/lib/blogImages.js'
+import { SEED_BLOG_POSTS } from '../src/data/seedBlogPosts.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const root = join(__dirname, '..')
 const outDir = join(root, 'public', 'content', 'success-stories')
+const blogDir = join(root, 'public', 'content', 'blog')
 const portalDir = join(root, 'src', 'assets', 'portal')
 const publicDir = join(root, 'public')
 
 mkdirSync(outDir, { recursive: true })
+mkdirSync(blogDir, { recursive: true })
 mkdirSync(portalDir, { recursive: true })
 
 const STORY_IMAGES = [
@@ -97,6 +101,45 @@ if (!existsSync(ogImage) && existsSync(join(publicDir, 'logo.png'))) {
     .png()
     .toFile(ogImage)
   console.log('og-image.png generated')
+}
+
+const categoryBySlug = Object.fromEntries(SEED_BLOG_POSTS.map((p) => [p.slug, p.category]))
+const blogPalette = [
+  ['#145A4A', '#2A9D8F'],
+  ['#1E6B5C', '#7CB342'],
+  ['#1B4332', '#40916C'],
+  ['#2D6A4F', '#95D5B2'],
+  ['#0F4C3A', '#52B788'],
+]
+
+for (let i = 0; i < SEED_BLOG_POSTS.length; i++) {
+  const post = SEED_BLOG_POSTS[i]
+  const fileName = `blog-${String(i + 1).padStart(2, '0')}.jpg`
+  const dest = join(blogDir, fileName)
+  if (existsSync(dest)) continue
+
+  const remoteUrl = BLOG_REMOTE_BY_SEED_ID[post.id]
+  let saved = false
+
+  if (remoteUrl) {
+    try {
+      const res = await fetch(remoteUrl, { signal: AbortSignal.timeout(20000) })
+      if (res.ok) {
+        const buf = Buffer.from(await res.arrayBuffer())
+        await sharp(buf).resize(800, 600, { fit: 'cover' }).jpeg({ quality: 85 }).toFile(dest)
+        console.log(`Blog image downloaded: content/blog/${fileName}`)
+        saved = true
+      }
+    } catch {
+      /* fall through to placeholder */
+    }
+  }
+
+  if (!saved) {
+    const label = (categoryBySlug[post.slug] || post.category || 'Wellness').slice(0, 28)
+    await writePlaceholderJpeg(dest, label, blogPalette[i % blogPalette.length])
+    console.log(`Blog placeholder created: content/blog/${fileName}`)
+  }
 }
 
 console.log('Content images ready')

@@ -103,7 +103,7 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        globPatterns: ['**/*.{js,css,html,ico,png,jpg,jpeg,svg,woff2,webmanifest}'],
         navigateFallback: 'offline.html',
         navigateFallbackDenylist: [/^\/private-admin/, /^\/businesscard/, /^\/BusinessCard/, /^\/card/],
         runtimeCaching: [

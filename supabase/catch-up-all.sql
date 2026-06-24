@@ -74,9 +74,9 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Remove old invite-only system (no-op if already gone)
+-- Drop table first — DROP POLICY ON invites fails if the table was already removed
 DROP FUNCTION IF EXISTS validate_invite_token(TEXT);
-DROP POLICY IF EXISTS "Admin full access to invites" ON invites;
-DROP TABLE IF EXISTS invites;
+DROP TABLE IF EXISTS invites CASCADE;
 
 -- ============================================================
 -- 2. Product + blog column updates
@@ -333,3 +333,34 @@ CREATE POLICY "Admin manage branding"
 --   • reviews = 4 rows, success_stories = 2 rows
 --   • invites table removed
 -- ============================================================
+
+-- ============================================================
+-- 8. Customer profile addresses + payment processor hooks
+-- ============================================================
+ALTER TABLE profiles
+  ADD COLUMN IF NOT EXISTS home_line1 TEXT,
+  ADD COLUMN IF NOT EXISTS home_line2 TEXT,
+  ADD COLUMN IF NOT EXISTS home_city TEXT,
+  ADD COLUMN IF NOT EXISTS home_county TEXT,
+  ADD COLUMN IF NOT EXISTS home_postcode TEXT,
+  ADD COLUMN IF NOT EXISTS home_country TEXT DEFAULT 'United Kingdom',
+  ADD COLUMN IF NOT EXISTS billing_line1 TEXT,
+  ADD COLUMN IF NOT EXISTS billing_line2 TEXT,
+  ADD COLUMN IF NOT EXISTS billing_city TEXT,
+  ADD COLUMN IF NOT EXISTS billing_county TEXT,
+  ADD COLUMN IF NOT EXISTS billing_postcode TEXT,
+  ADD COLUMN IF NOT EXISTS billing_country TEXT DEFAULT 'United Kingdom',
+  ADD COLUMN IF NOT EXISTS delivery_line1 TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_line2 TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_city TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_county TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_postcode TEXT,
+  ADD COLUMN IF NOT EXISTS delivery_country TEXT DEFAULT 'United Kingdom',
+  ADD COLUMN IF NOT EXISTS billing_same_as_home BOOLEAN DEFAULT true,
+  ADD COLUMN IF NOT EXISTS delivery_same_as_billing BOOLEAN DEFAULT true,
+  ADD COLUMN IF NOT EXISTS payment_provider TEXT,
+  ADD COLUMN IF NOT EXISTS payment_customer_id TEXT;
+
+ALTER TABLE orders
+  ADD COLUMN IF NOT EXISTS delivery_address TEXT;
+
