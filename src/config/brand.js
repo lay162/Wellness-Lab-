@@ -42,7 +42,8 @@ export const brand = {
   },
 
   contact: {
-    email: 'hello@wellnesslab.example',
+    email: 'support@thewellnesslab.uk',
+    mailto: 'mailto:support@thewellnesslab.uk',
     phone: '+44 7863 004468',
     whatsapp: '+447863004468',
     whatsappUrl: 'https://wa.me/447863004468',

@@ -364,3 +364,44 @@ ALTER TABLE profiles
 ALTER TABLE orders
   ADD COLUMN IF NOT EXISTS delivery_address TEXT;
 
+-- ============================================================
+-- 9. Shop admin login (support@thewellnesslab.uk)
+-- ============================================================
+-- Ensure new signups get a profile row automatically
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION handle_new_user();
+
+-- Create profile if missing, or promote existing row to admin
+INSERT INTO public.profiles (
+  id, full_name, email, company_name, role, status,
+  must_change_password, terms_accepted, compliance_accepted, reason_for_access
+)
+SELECT
+  u.id,
+  'Chan & Jordan — Wellness Lab',
+  u.email,
+  'The Wellness Lab',
+  'admin',
+  'approved',
+  true,
+  true,
+  true,
+  'Shop admin'
+FROM auth.users u
+WHERE u.email = 'support@thewellnesslab.uk'
+ON CONFLICT (id) DO UPDATE SET
+  role = 'admin',
+  status = 'approved',
+  must_change_password = true,
+  email = EXCLUDED.email,
+  full_name = CASE
+    WHEN profiles.full_name IS NULL OR profiles.full_name = '' THEN EXCLUDED.full_name
+    ELSE profiles.full_name
+  END,
+  company_name = CASE
+    WHEN profiles.company_name IS NULL OR profiles.company_name = '' THEN EXCLUDED.company_name
+    ELSE profiles.company_name
+  END;
+

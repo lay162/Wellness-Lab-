@@ -8,7 +8,6 @@ import Input, { Checkbox } from '../../components/ui/Input'
 import Card from '../../components/ui/Card'
 import InstallAppPanel from '../../components/ui/InstallAppPanel'
 import toast from 'react-hot-toast'
-import { shopPaths } from '../../lib/shopPaths'
 
 export default function RegisterPage() {
   const { signUp, signIn } = useAuth()
@@ -57,7 +56,7 @@ export default function RegisterPage() {
       navigate('/private-portal/login', { replace: true })
     } else {
       toast.success('Welcome to Wellness Lab!')
-      navigate(shopPaths.catalogue, { replace: true })
+      navigate('/private-portal/pending', { replace: true })
     }
     setLoading(false)
   }

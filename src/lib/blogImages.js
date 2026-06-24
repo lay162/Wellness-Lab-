@@ -28,15 +28,20 @@ const U = {
   gymAthlete: unsplash('photo-1518611012118-696072aa579a'),
   gymFacility: unsplash('photo-1534438327276-14e5300c3a48'),
   weights: unsplash('photo-1571902943202-507ec2618e8f'),
+  bodybuilding: unsplash('photo-1581009146145-b5ef050c2e1e'),
   healthyBowl: unsplash('photo-1490645935967-10de6ba17061'),
   freshFood: unsplash('photo-1512621776951-a57141f2eefd'),
+  gutHealth: unsplash('photo-1498837167922-ddd27525d352'),
+  metabolicNutrition: unsplash('photo-1520206183501-b80df61043c2'),
   meditation: unsplash('photo-1506126613408-eca07ce68773'),
   yogaRest: unsplash('photo-1544367567-0f2fcb009e0b'),
+  sleepingBed: unsplash('photo-1631049307264-da0ec9d70304'),
   beautySkincare: unsplash('photo-1522335789203-aabd1fc54bc9'),
   skincareProducts: unsplash('photo-1556228578-0d85b1a4d571'),
   studyFocus: unsplash('photo-1434030216411-0b793f4b4173'),
   booksFocus: unsplash('photo-1481627834876-b7833e8f5570'),
   supplements: unsplash('photo-1584308666744-24d5c474f2ae'),
+  medicalVitamins: unsplash('photo-1471864190281-a93a3070b6de'),
   coupleWellness: unsplash('photo-1516589178581-6cd7833ae3b2'),
   businessMeeting: unsplash('photo-1556761175-b413da4baf72'),
   documents: unsplash('photo-1450101499163-c8848c66ca85'),
@@ -47,30 +52,30 @@ const U = {
 
 /** Remote URLs keyed by seed id — used by ensure-content-images.mjs at build time. */
 export const BLOG_REMOTE_BY_SEED_ID = {
-  'seed-blog-1': U.gymTraining,
-  'seed-blog-2': U.meditation,
-  'seed-blog-3': U.healthyBowl,
-  'seed-blog-4': U.weights,
-  'seed-blog-5': U.beautySkincare,
-  'seed-blog-6': U.studyFocus,
-  'seed-blog-7': U.gymWorkout,
-  'seed-blog-8': U.yogaRest,
-  'seed-blog-9': U.skincareProducts,
-  'seed-blog-10': U.gymAthlete,
-  'seed-blog-11': U.booksFocus,
-  'seed-blog-12': U.supplements,
-  'seed-blog-13': U.coupleWellness,
-  'seed-blog-14': U.freshFood,
-  'seed-blog-15': U.gymFacility,
-  'seed-blog-16': U.gymAthlete,
-  'seed-blog-17': U.documents,
-  'seed-blog-18': U.businessMeeting,
-  'seed-blog-19': U.gymTraining,
-  'seed-blog-20': U.meditation,
-  'seed-blog-21': U.beautySkincare,
-  'seed-blog-22': U.freshFood,
-  'seed-blog-23': U.natureWellness,
-  'seed-blog-24': U.shopRetail,
+  'seed-blog-1': U.gymTraining,       // GLP-1 metabolic / gym
+  'seed-blog-2': U.meditation,        // Sermorelin sleep
+  'seed-blog-3': U.healthyBowl,        // Glutathione immune
+  'seed-blog-4': U.weights,           // BPC-157 recovery
+  'seed-blog-5': U.beautySkincare,    // GHK-Cu beauty
+  'seed-blog-6': U.studyFocus,        // Methylene blue cognitive
+  'seed-blog-7': U.gymWorkout,        // MOTS-C metabolic
+  'seed-blog-8': U.yogaRest,          // DSIP sleep recovery
+  'seed-blog-9': U.supplements,       // NAD+ energy
+  'seed-blog-10': U.gymAthlete,       // Tesamorelin body composition
+  'seed-blog-11': U.booksFocus,       // Synapsin cognitive
+  'seed-blog-12': U.medicalVitamins,  // B12 injectables
+  'seed-blog-13': U.coupleWellness,   // PT-141 intimacy
+  'seed-blog-14': U.freshFood,        // Thymosin immune
+  'seed-blog-15': U.gymFacility,      // Gym owners business
+  'seed-blog-16': U.bodybuilding,     // Bodybuilding recovery
+  'seed-blog-17': U.documents,        // Injectable vs oral education
+  'seed-blog-18': U.businessMeeting,  // Compliance
+  'seed-blog-19': U.metabolicNutrition, // GLP-1 gym questions
+  'seed-blog-20': U.sleepingBed,      // Sleep peptides
+  'seed-blog-21': U.skincareProducts, // Anti-aging longevity
+  'seed-blog-22': U.gutHealth,        // Liporelin / KPV gut metabolic
+  'seed-blog-23': U.natureWellness,     // Getting started
+  'seed-blog-24': U.shopRetail,       // Shop guide
 }
 
 export const BLOG_REMOTE_IMAGES = Object.fromEntries(
@@ -78,13 +83,13 @@ export const BLOG_REMOTE_IMAGES = Object.fromEntries(
 )
 
 export const BLOG_CATEGORY_IMAGES = {
-  Metabolic: [U.gymTraining, U.gymWorkout, U.gymAthlete],
-  'Hormone & Growth': [U.gymAthlete, U.meditation, U.weights],
+  Metabolic: [U.gymTraining, U.gymWorkout, U.metabolicNutrition],
+  'Hormone & Growth': [U.gymAthlete, U.bodybuilding, U.weights],
   'Immune Support': [U.healthyBowl, U.freshFood],
-  'Recovery & Repair': [U.weights, U.gymWorkout, U.yogaRest],
+  'Recovery & Repair': [U.weights, U.bodybuilding, U.sleepingBed],
   'Anti-Aging & Beauty': [U.beautySkincare, U.skincareProducts],
   Cognitive: [U.studyFocus, U.booksFocus],
-  'Energy & Vitamins': [U.skincareProducts, U.supplements],
+  'Energy & Vitamins': [U.supplements, U.medicalVitamins],
   'Intimacy & Wellness': [U.coupleWellness, U.diningCouple],
   'Wellness Business': [U.gymFacility, U.businessMeeting],
   Education: [U.documents, U.booksFocus],

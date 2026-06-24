@@ -69,6 +69,7 @@ export default defineConfig({
         'logo.png', 'og-image.png', 'robots.txt', 'sitemap.xml',
         'splash/apple-1170x2532.png', 'splash/apple-1284x2778.png',
         'splash/apple-1290x2796.png', 'splash/apple-828x1792.png',
+        'splash/apple-1242x2688.png', 'splash/apple-750x1334.png',
       ],
       manifest: {
         name: 'Wellness Lab',
@@ -77,9 +78,9 @@ export default defineConfig({
         theme_color: '#1E6B5C',
         background_color: '#F8FAF9',
         display: 'standalone',
-        orientation: 'portrait-primary',
+        orientation: 'any',
         scope: './',
-        start_url: './',
+        start_url: './private-portal/dashboard',
         categories: ['health', 'lifestyle', 'shopping'],
         icons: [
           {

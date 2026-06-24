@@ -43,6 +43,10 @@ if (missingStories.length > 0) {
 
 async function writePlaceholderJpeg(path, label, colors) {
   const [c1, c2] = colors
+  const safeLabel = String(label)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
   const svg = Buffer.from(`
     <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -53,7 +57,7 @@ async function writePlaceholderJpeg(path, label, colors) {
       </defs>
       <rect width="800" height="600" fill="url(#g)"/>
       <text x="400" y="310" text-anchor="middle" fill="rgba(255,255,255,0.85)"
-        font-family="Georgia,serif" font-size="36" font-weight="600">${label}</text>
+        font-family="Georgia,serif" font-size="36" font-weight="600">${safeLabel}</text>
     </svg>`)
   await sharp(svg).jpeg({ quality: 85 }).toFile(path)
 }
@@ -112,11 +116,13 @@ const blogPalette = [
   ['#0F4C3A', '#52B788'],
 ]
 
+const refreshBlog = process.argv.includes('--refresh-blog')
+
 for (let i = 0; i < SEED_BLOG_POSTS.length; i++) {
   const post = SEED_BLOG_POSTS[i]
   const fileName = `blog-${String(i + 1).padStart(2, '0')}.jpg`
   const dest = join(blogDir, fileName)
-  if (existsSync(dest)) continue
+  if (existsSync(dest) && !refreshBlog) continue
 
   const remoteUrl = BLOG_REMOTE_BY_SEED_ID[post.id]
   let saved = false

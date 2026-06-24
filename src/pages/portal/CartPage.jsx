@@ -7,13 +7,14 @@ import Button from '../../components/ui/Button'
 import Card from '../../components/ui/Card'
 import PageHero from '../../components/ui/PageHero'
 import { formatCurrency, formatProductPrice, productHasPrice } from '../../lib/utils'
-import { shopPaths } from '../../lib/shopPaths'
+import { shopPathsForPortal, portalShopPaths } from '../../lib/shopPaths'
 import { deliveryAddressFromProfile, isAddressComplete, resolveDeliveryAddress, profileToAddressForm } from '../../lib/profileAddresses'
 import toast from 'react-hot-toast'
 import { useState } from 'react'
 import { Textarea } from '../../components/ui/Input'
 
 export default function CartPage({ portal = false }) {
+  const paths = shopPathsForPortal(portal)
   const { items, removeItem, updateQuantity, clearCart, total } = useCart()
   const { user, isRejected, isSuspended, profile } = useAuth()
   const navigate = useNavigate()
@@ -25,7 +26,7 @@ export default function CartPage({ portal = false }) {
 
     if (!user) {
       toast('Sign in or create an account to complete your order')
-      navigate(shopPaths.login, { state: { from: { pathname: shopPaths.cart } } })
+      navigate(paths.login, { state: { from: { pathname: paths.cart } } })
       return
     }
 
@@ -37,7 +38,7 @@ export default function CartPage({ portal = false }) {
     const deliveryAddr = profile ? resolveDeliveryAddress(profileToAddressForm(profile)) : null
     if (!isAddressComplete(deliveryAddr)) {
       toast.error('Please add a delivery address in your profile before checkout.')
-      navigate(shopPaths.profile)
+      navigate(paths.profile)
       return
     }
 
@@ -84,7 +85,7 @@ export default function CartPage({ portal = false }) {
     clearCart()
     toast.success('Order request submitted!')
     setLoading(false)
-    navigate(shopPaths.order(order.id))
+    navigate(paths.order(order.id))
   }
 
   const emptyCart = (
@@ -92,7 +93,7 @@ export default function CartPage({ portal = false }) {
       <ShoppingBag className="w-16 h-16 text-text-muted mx-auto mb-4 opacity-40" />
       <h1 className="text-xl font-bold text-text mb-2">Your cart is empty</h1>
       <p className="text-text-muted mb-6">Browse the shop to add products</p>
-      <Link to={shopPaths.catalogue}><Button>Browse shop</Button></Link>
+      <Link to={paths.catalogue}><Button>Browse shop</Button></Link>
     </div>
   )
 
@@ -130,9 +131,9 @@ export default function CartPage({ portal = false }) {
       <Card className="p-6">
         {!user && (
           <p className="text-sm text-text-muted mb-4 p-3 rounded-xl bg-accent/50 border border-primary/10">
-            <Link to={shopPaths.login} state={{ from: { pathname: shopPaths.cart } }} className="text-primary font-medium hover:underline">Sign in</Link>
+            <Link to={paths.login} state={{ from: { pathname: paths.cart } }} className="text-primary font-medium hover:underline">Sign in</Link>
             {' or '}
-            <Link to={shopPaths.register} className="text-primary font-medium hover:underline">create an account</Link>
+            <Link to={paths.register} className="text-primary font-medium hover:underline">create an account</Link>
             {' '}to submit your order. Payment details will be arranged once your payment processor is connected.
           </p>
         )}
@@ -147,7 +148,7 @@ export default function CartPage({ portal = false }) {
                 ) : (
                   <p className="text-sm text-amber-700 mt-1">
                     No delivery address saved.{' '}
-                    <Link to={shopPaths.profile} className="text-primary font-medium hover:underline">Add one in your profile</Link>
+                    <Link to={paths.profile} className="text-primary font-medium hover:underline">Add one in your profile</Link>
                     {' '}before checkout.
                   </p>
                 )}

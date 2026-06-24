@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams, useNavigate } from 'react-router-dom'
 import { ShoppingCart, FileText, ArrowLeft } from 'lucide-react'
+import PortalBackLink from '../../components/portal/PortalBackLink'
 import { supabase, isSupabaseConfigured } from '../../lib/supabase'
 import { useCart } from '../../context/CartContext'
 import { getSeedProduct, isSeedProduct, resolveProduct } from '../../lib/products'
@@ -9,13 +10,14 @@ import Card, { CardBody } from '../../components/ui/Card'
 import { formatProductPrice } from '../../lib/utils'
 import { PageLoader } from '../../components/ui/Skeleton'
 import toast from 'react-hot-toast'
-import { shopPaths } from '../../lib/shopPaths'
+import { shopPathsForPortal } from '../../lib/shopPaths'
 import SeoHead from '../../components/seo/SeoHead'
 import { productSchema, SITE_URL } from '../../config/seo'
 
 export default function ProductPage({ portal = false }) {
   const { id } = useParams()
   const navigate = useNavigate()
+  const paths = shopPathsForPortal(portal)
   const { addItem } = useCart()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
@@ -40,7 +42,7 @@ export default function ProductPage({ portal = false }) {
     if (product.stock <= 0) { toast.error('Out of stock'); return }
     addItem(product, quantity)
     toast.success(`Added ${quantity}x ${product.name} to cart`)
-    if (!portal) navigate(shopPaths.cart)
+    if (!portal) navigate(paths.cart)
   }
 
   return (
@@ -56,8 +58,10 @@ export default function ProductPage({ portal = false }) {
         />
       )}
     <div className={portal ? 'max-w-4xl mx-auto' : 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12'}>
-      {!portal && (
-        <Link to={shopPaths.catalogue} className="inline-flex items-center gap-2 text-sm text-primary font-medium hover:underline mb-8">
+      {portal ? (
+        <PortalBackLink to={paths.catalogue}>Back to shop</PortalBackLink>
+      ) : (
+        <Link to={paths.catalogue} className="inline-flex items-center gap-2 text-sm text-primary font-medium hover:underline mb-6">
           <ArrowLeft className="w-4 h-4" /> Back to shop
         </Link>
       )}

@@ -15,17 +15,24 @@ export default function ContactPage() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' })
   const [loading, setLoading] = useState(false)
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault()
     setLoading(true)
-    await new Promise(r => setTimeout(r, 800))
-    toast.success('Message sent! We will respond within 24–48 hours.')
+    const body = [
+      `Name: ${form.name}`,
+      `Reply-to: ${form.email}`,
+      '',
+      form.message,
+    ].join('\n')
+    const mailto = `${brand.contact.mailto}?subject=${encodeURIComponent(form.subject)}&body=${encodeURIComponent(body)}`
+    window.location.href = mailto
+    toast.success('Opening your email app — send the message to reach our team.')
     setForm({ name: '', email: '', subject: '', message: '' })
     setLoading(false)
   }
 
   const info = [
-    { icon: Mail, label: 'Email', value: brand.contact.email },
+    { icon: Mail, label: 'Email', value: brand.contact.email, href: brand.contact.mailto },
     { icon: Phone, label: 'Phone / WhatsApp', value: brand.contact.phone, href: brand.contact.whatsappUrl },
     { icon: MapPin, label: 'Address', value: brand.contact.address },
     { icon: Clock, label: 'Hours', value: brand.contact.hours },

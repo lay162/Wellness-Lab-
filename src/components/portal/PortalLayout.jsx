@@ -1,27 +1,29 @@
 import { useState } from 'react'
-import { Link, NavLink, Outlet, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, NavLink, Outlet, useNavigate, useSearchParams, useLocation } from 'react-router-dom'
 import {
-  LayoutDashboard, ShoppingBag, Package, ShoppingCart, ClipboardList,
-  Star, Trophy, Heart, Lightbulb, User, Settings, LogOut, Menu, X, Download,
+  LayoutDashboard, ShoppingBag, ShoppingCart, ClipboardList,
+  Star, Trophy, Heart, Lightbulb, User, Settings, LogOut, Menu, Download, ArrowLeft,
 } from 'lucide-react'
 import { useAuth } from '../../context/AuthContext'
 import { useCart } from '../../context/CartContext'
 import { usePWA } from '../../hooks/usePWA'
 import brand from '../../config/brand'
 import { useEffect } from 'react'
-import { shopPaths } from '../../lib/shopPaths'
+import { portalShopPaths } from '../../lib/shopPaths'
+import { isPortalRootPath, getPortalBackTarget, getPortalPageTitle } from '../../lib/portalNav'
+import PortalBottomNav from './PortalBottomNav'
 
 const navItems = [
-  { to: '/private-portal/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
-  { to: shopPaths.catalogue, icon: ShoppingBag, label: 'Shop' },
-  { to: shopPaths.cart, icon: ShoppingCart, label: 'Cart' },
-  { to: '/private-portal/orders', icon: ClipboardList, label: 'Orders' },
-  { to: '/private-portal/private-reviews', icon: Star, label: 'Reviews' },
-  { to: '/private-portal/private-success-stories', icon: Trophy, label: 'Success Stories' },
-  { to: '/private-portal/private-aftercare', icon: Heart, label: 'Aftercare' },
-  { to: '/private-portal/private-advice', icon: Lightbulb, label: 'Wellness Advice' },
-  { to: '/private-portal/profile', icon: User, label: 'Profile' },
-  { to: '/private-portal/settings', icon: Settings, label: 'Settings' },
+  { to: '/private-portal/dashboard', icon: LayoutDashboard, label: 'Dashboard', match: (p) => p === '/private-portal/dashboard' },
+  { to: portalShopPaths.catalogue, icon: ShoppingBag, label: 'Shop', match: (p) => p.startsWith('/private-portal/shop') },
+  { to: portalShopPaths.cart, icon: ShoppingCart, label: 'Cart', match: (p) => p === portalShopPaths.cart },
+  { to: '/private-portal/orders', icon: ClipboardList, label: 'Orders', match: (p) => p.startsWith('/private-portal/order') },
+  { to: '/private-portal/private-reviews', icon: Star, label: 'Reviews', match: (p) => p.startsWith('/private-portal/private-reviews') },
+  { to: '/private-portal/private-success-stories', icon: Trophy, label: 'Success Stories', match: (p) => p.startsWith('/private-portal/private-success-stories') },
+  { to: '/private-portal/private-aftercare', icon: Heart, label: 'Aftercare', match: (p) => p.startsWith('/private-portal/private-aftercare') },
+  { to: '/private-portal/private-advice', icon: Lightbulb, label: 'Wellness Advice', match: (p) => p.startsWith('/private-portal/private-advice') },
+  { to: '/private-portal/profile', icon: User, label: 'Profile', match: (p) => p === '/private-portal/profile' },
+  { to: '/private-portal/settings', icon: Settings, label: 'Settings', match: (p) => p === '/private-portal/settings' },
 ]
 
 export default function PortalLayout() {
@@ -29,6 +31,7 @@ export default function PortalLayout() {
   const { itemCount } = useCart()
   const { canInstall, installApp, registerServiceWorker } = usePWA()
   const navigate = useNavigate()
+  const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [showInstall, setShowInstall] = useState(false)
 
@@ -62,9 +65,11 @@ export default function PortalLayout() {
             key={item.to}
             to={item.to}
             onClick={() => setSidebarOpen(false)}
-            className={({ isActive }) =>
+            className={() =>
               `flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-colors ${
-                isActive ? 'bg-primary text-white' : 'text-text-muted hover:bg-gray-50 hover:text-text'
+                item.match(location.pathname)
+                  ? 'bg-primary text-white'
+                  : 'text-text-muted hover:bg-gray-50 hover:text-text'
               }`
             }
           >
@@ -91,8 +96,15 @@ export default function PortalLayout() {
     </>
   )
 
+  const isRoot = isPortalRootPath(location.pathname)
+  const pageTitle = getPortalPageTitle(location.pathname)
+
+  const handleMobileBack = () => {
+    navigate(getPortalBackTarget(location.pathname))
+  }
+
   return (
-    <div className="min-h-screen bg-background flex">
+    <div className="min-h-[100dvh] bg-background flex">
       <aside className="hidden lg:flex lg:flex-col lg:w-64 bg-white border-r border-gray-100 fixed inset-y-0 left-0 z-30">
         <NavContent />
       </aside>
@@ -106,12 +118,48 @@ export default function PortalLayout() {
         </div>
       )}
 
-      <div className="flex-1 lg:ml-64 flex flex-col min-h-screen">
-        <header className="sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-100 px-4 h-14 flex items-center justify-between lg:px-8">
-          <button className="lg:hidden p-2 rounded-lg hover:bg-gray-100" onClick={() => setSidebarOpen(true)}>
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-3 ml-auto">
+      <div className="flex-1 lg:ml-64 flex flex-col min-h-[100dvh]">
+        {/* Mobile header — back, title, menu/cart */}
+        <header className="lg:hidden sticky top-0 z-20 bg-white/95 backdrop-blur-md border-b border-gray-100 px-2 min-h-14 flex items-center gap-1 pt-[env(safe-area-inset-top)]">
+          {isRoot ? (
+            <button
+              type="button"
+              className="p-2.5 rounded-lg hover:bg-gray-100 shrink-0"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              className="p-2.5 rounded-lg hover:bg-gray-100 shrink-0"
+              onClick={handleMobileBack}
+              aria-label="Go back"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+          )}
+          <h1 className="flex-1 text-center text-sm font-semibold text-text truncate px-1">
+            {pageTitle}
+          </h1>
+          <Link
+            to={portalShopPaths.cart}
+            className="relative p-2.5 rounded-lg hover:bg-gray-100 shrink-0"
+            aria-label={itemCount > 0 ? `Cart, ${itemCount} items` : 'Cart'}
+          >
+            <ShoppingCart className="w-5 h-5 text-text-muted" />
+            {itemCount > 0 && (
+              <span className="absolute top-1 right-1 bg-primary text-white text-[10px] min-w-[1rem] h-4 px-0.5 rounded-full flex items-center justify-center font-bold">
+                {itemCount > 9 ? '9+' : itemCount}
+              </span>
+            )}
+          </Link>
+        </header>
+
+        {/* Desktop header */}
+        <header className="hidden lg:flex sticky top-0 z-20 bg-white/90 backdrop-blur-md border-b border-gray-100 px-8 h-14 items-center justify-end">
+          <div className="flex items-center gap-3">
             {showInstall && canInstall && (
               <button
                 onClick={installApp}
@@ -121,7 +169,7 @@ export default function PortalLayout() {
                 Install App
               </button>
             )}
-            <Link to={shopPaths.cart} className="relative p-2 rounded-lg hover:bg-gray-100">
+            <Link to={portalShopPaths.cart} className="relative p-2 rounded-lg hover:bg-gray-100">
               <ShoppingCart className="w-5 h-5 text-text-muted" />
               {itemCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
@@ -132,9 +180,11 @@ export default function PortalLayout() {
           </div>
         </header>
 
-        <main className="flex-1 p-4 lg:p-8">
+        <main className="flex-1 p-4 lg:p-8 pb-[calc(4.5rem+env(safe-area-inset-bottom))] lg:pb-8">
           <Outlet />
         </main>
+
+        <PortalBottomNav />
       </div>
     </div>
   )

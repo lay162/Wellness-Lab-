@@ -69,7 +69,7 @@ function Lazy({ children }) {
 
 function LegacyProductRedirect() {
   const { id } = useParams()
-  return <Navigate to={`/shop/product/${id}`} replace />
+  return <Navigate to={`/private-portal/shop/product/${id}`} replace />
 }
 
 const toastOptions = {
@@ -134,9 +134,12 @@ export default function App() {
 
               <Route path="private-portal" element={<ProtectedRoute requireApproved><PortalLayout /></ProtectedRoute>}>
                 <Route path="dashboard" element={<Lazy><DashboardPage /></Lazy>} />
-                <Route path="catalogue" element={<Navigate to="/shop" replace />} />
+                <Route path="shop" element={<Lazy><CataloguePage portal /></Lazy>} />
+                <Route path="shop/product/:id" element={<Lazy><ProductPage portal /></Lazy>} />
+                <Route path="shop/cart" element={<Lazy><CartPage portal /></Lazy>} />
+                <Route path="catalogue" element={<Navigate to="/private-portal/shop" replace />} />
                 <Route path="product/:id" element={<LegacyProductRedirect />} />
-                <Route path="cart" element={<Navigate to="/shop/cart" replace />} />
+                <Route path="cart" element={<Navigate to="/private-portal/shop/cart" replace />} />
                 <Route path="orders" element={<Lazy><OrdersPage /></Lazy>} />
                 <Route path="order/:id" element={<Lazy><OrderDetailPage /></Lazy>} />
                 <Route path="profile" element={<Lazy><ProfilePage /></Lazy>} />

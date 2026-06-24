@@ -2,7 +2,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { User, LayoutDashboard, ClipboardList, ShoppingBag, LogOut, ChevronDown } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { useAuth } from '../../context/AuthContext'
-import { shopPaths } from '../../lib/shopPaths'
+import { shopPaths, portalShopPaths, publicShopPaths } from '../../lib/shopPaths'
+import { isAppInstalled } from '../../lib/pwaInstall'
 
 export default function AccountMenu({ className = '' }) {
   const { user, profile, signOut, isAdmin } = useAuth()
@@ -18,6 +19,8 @@ export default function AccountMenu({ className = '' }) {
     document.addEventListener('mousedown', close)
     return () => document.removeEventListener('mousedown', close)
   }, [open])
+
+  const shopLinks = isAppInstalled() ? portalShopPaths : publicShopPaths
 
   if (!user) {
     return (
@@ -83,7 +86,7 @@ export default function AccountMenu({ className = '' }) {
             <ClipboardList className="w-4 h-4" /> My orders
           </Link>
           <Link
-            to={shopPaths.catalogue}
+            to={shopLinks.catalogue}
             onClick={() => setOpen(false)}
             className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-text-muted hover:text-text hover:bg-gray-50"
           >

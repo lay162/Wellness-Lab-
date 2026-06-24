@@ -17,11 +17,14 @@
 @layer base {
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
 
   body {
     @apply bg-background text-text antialiased;
     font-family: var(--font-sans);
+    min-height: 100dvh;
   }
 
   ::selection {

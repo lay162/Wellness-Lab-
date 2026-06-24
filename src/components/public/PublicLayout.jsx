@@ -251,7 +251,9 @@ export default function PublicLayout() {
               <div className="mt-6 flex flex-col gap-3">
                 <SocialLinks variant="light" size="md" />
                 <div className="flex flex-col gap-1.5 text-sm text-white/50">
-                  <span>{brand.contact.email}</span>
+                  <a href={brand.contact.mailto} className="hover:text-white transition-colors">
+                    {brand.contact.email}
+                  </a>
                   <a href={brand.contact.whatsappUrl} target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">
                     {brand.contact.phone}
                   </a>

@@ -42,7 +42,10 @@ export function AccessDeniedPage() {
           : 'You do not have permission to access this area.'}
       </p>
       <p className="text-sm text-text-muted mb-8">
-        If you believe this is an error, please contact {brand.contact.email}.
+        If you believe this is an error, please contact{' '}
+        <a href={brand.contact.mailto} className="text-primary font-medium hover:underline">
+          {brand.contact.email}
+        </a>.
       </p>
       <Button variant="outline" onClick={signOut}>Sign Out</Button>
     </Card>

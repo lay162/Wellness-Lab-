@@ -12,7 +12,7 @@ import {
   profileToAddressForm,
   profileToSavePayload,
 } from '../../lib/profileAddresses'
-import { shopPaths } from '../../lib/shopPaths'
+import { portalShopPaths } from '../../lib/shopPaths'
 import toast from 'react-hot-toast'
 
 function AddressFields({ prefix, title, form, onChange, disabled }) {
@@ -269,7 +269,7 @@ export default function ProfilePage() {
 
       <p className="text-sm text-text-muted">
         Delivery address is used at checkout.{' '}
-        <Link to={shopPaths.cart} className="text-primary font-medium hover:underline">View cart</Link>
+        <Link to={portalShopPaths.cart} className="text-primary font-medium hover:underline">View cart</Link>
       </p>
     </div>
   )

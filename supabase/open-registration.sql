@@ -37,5 +37,4 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 
 -- Optional cleanup — invite system no longer used
 DROP FUNCTION IF EXISTS validate_invite_token(TEXT);
-DROP POLICY IF EXISTS "Admin full access to invites" ON invites;
-DROP TABLE IF EXISTS invites;
+DROP TABLE IF EXISTS invites CASCADE;

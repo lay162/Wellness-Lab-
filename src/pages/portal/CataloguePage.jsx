@@ -9,9 +9,10 @@ import { collectProductCategories, productMatchesCategory } from '../../lib/shop
 import PageHero from '../../components/ui/PageHero'
 import { PortalPageHeader } from '../../components/ui/EmptyState'
 import { SkeletonCard } from '../../components/ui/Skeleton'
-import { shopPaths } from '../../lib/shopPaths'
+import { shopPathsForPortal } from '../../lib/shopPaths'
 
 export default function CataloguePage({ portal = false }) {
+  const paths = shopPathsForPortal(portal)
   const [products, setProducts] = useState(() => mergeSeedProducts([]))
   const [search, setSearch] = useState('')
   const [activeCategory, setActiveCategory] = useState('all')
@@ -44,7 +45,7 @@ export default function CataloguePage({ portal = false }) {
 
   const searchBar = (
     <div className="relative w-full max-w-md">
-      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
+      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted pointer-events-none" aria-hidden />
       <input
         type="text"
         placeholder="Search products..."
@@ -113,7 +114,7 @@ export default function CataloguePage({ portal = false }) {
             )}
             <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {filtered.map(p => (
-                <Link key={p.id} to={shopPaths.product(p.id)}>
+                <Link key={p.id} to={paths.product(p.id)}>
                   <Card hover className="overflow-hidden h-full">
                     {p.image_url ? (
                       <div className="w-full h-52 bg-white flex items-center justify-center p-4">

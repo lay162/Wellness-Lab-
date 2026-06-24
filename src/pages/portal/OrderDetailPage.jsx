@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom'
-import { ArrowLeft, ExternalLink, Truck, RotateCcw, Package } from 'lucide-react'
+import { ExternalLink, Truck, RotateCcw, Package } from 'lucide-react'
+import { PortalBackLinkAnchor } from '../../components/portal/PortalBackLink'
 import { supabase } from '../../lib/supabase'
 import { useCart } from '../../context/CartContext'
 import { resolveProduct } from '../../lib/products'
@@ -12,7 +13,7 @@ import {
   PAYMENT_STATUS_LABELS, PAYMENT_METHOD_LABELS,
 } from '../../lib/utils'
 import { PageLoader } from '../../components/ui/Skeleton'
-import { shopPaths } from '../../lib/shopPaths'
+import { portalShopPaths } from '../../lib/shopPaths'
 import toast from 'react-hot-toast'
 
 const TRACKING_STEPS = [
@@ -73,7 +74,7 @@ export default function OrderDetailPage() {
     setReordering(false)
     if (added > 0) {
       toast.success('Items added to your cart')
-      navigate(shopPaths.cart)
+      navigate(portalShopPaths.cart)
     } else {
       toast.error('Could not re-add items — contact us for help')
     }
@@ -87,9 +88,7 @@ export default function OrderDetailPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <Link to="/private-portal/orders" className="inline-flex items-center gap-2 text-primary text-sm font-medium mb-6">
-        <ArrowLeft className="w-4 h-4" /> Back to Orders
-      </Link>
+      <PortalBackLinkAnchor to="/private-portal/orders">Back to Orders</PortalBackLinkAnchor>
 
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
@@ -138,7 +137,7 @@ export default function OrderDetailPage() {
         <Button onClick={handleReorder} loading={reordering} variant="secondary">
           <RotateCcw className="w-4 h-4" /> Re-order these items
         </Button>
-        <Button variant="outline" onClick={() => navigate(shopPaths.catalogue)}>
+        <Button variant="outline" onClick={() => navigate(portalShopPaths.catalogue)}>
           <Package className="w-4 h-4" /> Continue shopping
         </Button>
       </div>

@@ -12,7 +12,7 @@ import Card from '../../components/ui/Card'
 import Badge from '../../components/ui/Badge'
 import { formatCurrency, formatDate, ORDER_STATUS_LABELS } from '../../lib/utils'
 import { PageLoader } from '../../components/ui/Skeleton'
-import { shopPaths } from '../../lib/shopPaths'
+import { portalShopPaths, accountPaths } from '../../lib/shopPaths'
 
 const TRACKABLE_STATUSES = new Set(['processing', 'shipped', 'awaiting_payment', 'payment_received'])
 
@@ -174,9 +174,9 @@ export default function DashboardPage() {
   const recentOrders = orders.slice(0, 5)
 
   const quickActions = [
-    { key: 'shop', icon: ShoppingBag, label: 'Shop', desc: 'Browse products', to: shopPaths.catalogue },
-    { key: 'cart', icon: ShoppingCart, label: 'Your cart', desc: itemCount > 0 ? `${itemCount} item${itemCount === 1 ? '' : 's'}` : 'Empty', to: shopPaths.cart },
-    { key: 'orders', icon: ClipboardList, label: 'All orders', desc: `${orders.length} total`, to: shopPaths.orders },
+    { key: 'shop', icon: ShoppingBag, label: 'Shop', desc: 'Browse products', to: portalShopPaths.catalogue },
+    { key: 'cart', icon: ShoppingCart, label: 'Your cart', desc: itemCount > 0 ? `${itemCount} item${itemCount === 1 ? '' : 's'}` : 'Empty', to: portalShopPaths.cart },
+    { key: 'orders', icon: ClipboardList, label: 'All orders', desc: `${orders.length} total`, to: accountPaths.orders },
     { key: 'help', icon: MessageCircle, label: 'Get help', desc: 'WhatsApp support', to: brand.contact.whatsappUrl, external: true },
   ]
 
@@ -252,7 +252,7 @@ export default function DashboardPage() {
             <h2 className="text-lg font-semibold text-text">Recent orders</h2>
           </div>
           {orders.length > 0 && (
-            <Link to={shopPaths.orders} className="text-sm text-primary font-medium hover:underline">
+            <Link to={accountPaths.orders} className="text-sm text-primary font-medium hover:underline">
               View all
             </Link>
           )}
@@ -303,7 +303,7 @@ export default function DashboardPage() {
               <img src={brand.appIcon192} alt="" className="w-10 h-10 rounded-xl object-cover" />
             </div>
             <p className="text-text-muted mb-4">No orders yet — when you place one, it will show here.</p>
-            <Link to={shopPaths.catalogue}>
+            <Link to={portalShopPaths.catalogue}>
               <span className="inline-flex items-center justify-center gap-2 font-medium px-7 py-3.5 text-base rounded-xl gradient-button text-white hover:brightness-110">
                 Start shopping
               </span>
